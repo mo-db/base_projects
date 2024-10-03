@@ -2,6 +2,7 @@
 #define DEBUG_H
 
 #include <stdio.h>
+#include <SDL3/SDL.h>
 
 #define ERROR_LOGFILE "/Users/moritz/Repos/SDL3_PROJS" \
 	"/software_renderer_01/bin/error.log"
