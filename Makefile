@@ -1,6 +1,6 @@
 ### CONFIG
 # specify source files: if no specified -> fetches all source files
-FILES := simple_delay_loop objects video debug logic state
+FILES := testrl
 
 # Makefile needs tab not spaces before recepie command
 SRC_DIR := src
@@ -19,13 +19,14 @@ endif
 EXE := $(BIN_DIR)/a.out
 
 # Helper vars
-SDL_CFLAGS := $(shell pkg-config --cflags sdl3)
-SDL_LIBS := $(shell pkg-config --libs sdl3)
+# SDL_CFLAGS := $(shell pkg-config --cflags sdl3)
+# SDL_LIBS := $(shell pkg-config --libs sdl3)
+RL_FLAGS := -framework CoreVideo -framework IOKit -framework Cocoa -framework GLUT -framework OpenGL ~/Libs/lib/libraylib.a
 
 # -g = include debug info, -O0/1/2 = optimization
 # -MMD -MP to create .d files for header deps
-CFLAGS := -Wall -g -MMD -MP $(SDL_CFLAGS)
-LDFLAGS :=
+CFLAGS := -Wall -g -MMD -MP $(CPPFLAGS)
+LDFLAGS := $(LDFLAGS) $(RL_FLAGS)
 LIBS :=
 
 
