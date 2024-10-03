@@ -19,14 +19,15 @@ endif
 EXE := $(BIN_DIR)/a.out
 
 # Helper vars
-# SDL_CFLAGS := $(shell pkg-config --cflags sdl3)
-# SDL_LIBS := $(shell pkg-config --libs sdl3)
-RL_FLAGS := -framework CoreVideo -framework IOKit -framework Cocoa -framework GLUT -framework OpenGL ~/Libs/lib/libraylib.a
+# SDL3_FLAGS := $(shell pkg-config --libs --cflags sdl3)
+SDL2_CFLAGS := $(shell sdl2-config --cflags)
+SDL2_LIBS:= $(shell sdl2-config --static-libs)
+RL_FLAGS := -framework CoreVideo -framework IOKit -framework Cocoa -framework GLUT -framework OpenGL /usr/local/lib/libraylib.a
 
 # -g = include debug info, -O0/1/2 = optimization
 # -MMD -MP to create .d files for header deps
-CFLAGS := -Wall -g -MMD -MP $(CPPFLAGS)
-LDFLAGS := $(LDFLAGS) $(RL_FLAGS)
+CFLAGS := -Wall -g -MMD -MP $(CPPFLAGS) $(SDL2_CFLAGS)
+LDFLAGS := $(RL_FLAGS) $(SDL2_LIBS)
 LIBS :=
 
 
