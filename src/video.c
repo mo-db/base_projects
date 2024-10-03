@@ -84,8 +84,6 @@ int render(struct window *window_p, struct scaled_pixelbuf *sp_p)
 		}
 		j += sp_p->scaling_factor;
 	}
-	PROCESS_ERROR("test!");
 	SDL_UpdateWindowSurface(window_p->window);
-	PROCESS_ERROR("test2!");
 	return 1;
 }

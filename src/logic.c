@@ -95,6 +95,5 @@ int draw_line_simple(struct scaled_pixelbuf *sp_p, struct point p1, struct point
 			sp_p->buf[plot_value] = 0xFFFF0000;
 		}
 	}
-	PROCESS_ERROR("now im here");
 	return 1;
 }
