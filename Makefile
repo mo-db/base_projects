@@ -1,6 +1,6 @@
 ### CONFIG
 # specify source files: if no specified -> fetches all source files
-FILES := testrl
+FILES := main debug video state logic objects
 
 # Makefile needs tab not spaces before recepie command
 SRC_DIR := src
@@ -26,8 +26,8 @@ RL_FLAGS := -framework CoreVideo -framework IOKit -framework Cocoa -framework GL
 
 # -g = include debug info, -O0/1/2 = optimization
 # -MMD -MP to create .d files for header deps
-CFLAGS := -Wall -g -MMD -MP $(CPPFLAGS) $(SDL2_CFLAGS)
-LDFLAGS := $(RL_FLAGS) $(SDL2_LIBS)
+CFLAGS := -Wall -g -MMD -MP $(SDL2_CFLAGS)
+LDFLAGS := $(SDL2_LIBS)
 LIBS :=
 
 

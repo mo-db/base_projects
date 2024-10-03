@@ -1,6 +1,6 @@
 // test
 #include "objects.h"
-#include <sdl3/sdl.h>
+#include <SDL2/SDL.h>
 
 static const Uint8 BD_1[] = {
 	0, 0, 1, 0, 0,

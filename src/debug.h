@@ -2,12 +2,12 @@
 #define DEBUG_H
 
 #include <stdio.h>
-#include <SDL3/SDL.h>
+#include <SDL2/SDL.h>
 
-#define ERROR_LOGFILE "/Users/moritz/Repos/SDL3_PROJS" \
-	"/software_renderer_01/bin/error.log"
-#define TRACE_LOGFILE "/Users/moritz/Repos/SDL3_PROJS" \
-	"/software_renderer_01/bin/trace.log"
+#define ERROR_LOGFILE "/Users/moritz/Repos" \
+	"/software_renderer/bin/error.log"
+#define TRACE_LOGFILE "/Users/moritz/Repos" \
+	"/software_renderer/bin/trace.log"
 #define PROCESS_ERROR(msg) _process_error(__TIME__, __FILE__, __LINE__, msg)
 #define LOG_TRACE(msg) _log_trace(__TIME__, __FILE__, __LINE__, msg)
 

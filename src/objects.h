@@ -1,7 +1,7 @@
 #ifndef OBJECTS_H
 #define OBJECTS_H
 
-#include <sdl3/sdl.h>
+#include <SDL2/SDL.h>
 
 // BIT Digits
 #define BD_HEIGHT 7

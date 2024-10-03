@@ -1,7 +1,7 @@
 #ifndef VIDEO_H
 #define VIDEO_H
 
-#include <SDL3/SDL.h>
+#include <SDL2/SDL.h>
 
 struct window {
 	Uint32 width;

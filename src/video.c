@@ -2,7 +2,7 @@
 #include "debug.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <SDL3/SDL.h>
+#include <SDL2/SDL.h>
 
 struct window *new_window_and_surface(Uint32 width, Uint32 height)
 {
@@ -12,7 +12,8 @@ struct window *new_window_and_surface(Uint32 width, Uint32 height)
     window_p->height = height;
     window_p->n_pixels = width * height;
 
-	window_p->window = SDL_CreateWindow("Window", width, height, SDL_WINDOW_METAL);
+	window_p->window = SDL_CreateWindow("Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+									 width, height, SDL_WINDOW_METAL);
 	if (!window_p->window) {
 		PROCESS_ERROR("Could't create window!");
         return NULL;

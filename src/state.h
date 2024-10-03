@@ -1,7 +1,7 @@
 #ifndef STATE_H
 #define STATE_H
 
-#include <SDL3/SDL.h>
+#include <SDL2/SDL.h>
 #include "video.h"
 
 /* static struct { */

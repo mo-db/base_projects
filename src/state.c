@@ -1,4 +1,4 @@
-#include <SDL3/SDL.h>
+#include <SDL2/SDL.h>
 #include "state.h"
 #include "logic.h"
 #include "debug.h"
@@ -46,7 +46,9 @@ int update(struct scaled_pixelbuf *sp_p)
 	/* 	testvar = p1.x; */
 	/* } */
 
-	draw_line_simple(sp_p, p1, p2);
+	if (!draw_line_simple(sp_p, p1, p2)) {
+		return 0;
+	}
 
 	return 1;
 }
