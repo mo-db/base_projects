@@ -1,21 +1,24 @@
 #include "debug.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdarg.h>
+#include <math.h>
+#include <assert.h>
 #include <SDL2/SDL.h>
 
 FILE *error_log;
 FILE *trace_log;
 
-int log_init(const char *error_log_file, const char *trace_log_file)
+int log_init(const char *warn_logfile, const char *trace_logfile)
 {
-	error_log = fopen(error_log_file, "w+");
-	if (!error_log) {
-		fprintf(stderr, "could not create error_log");
+	warn_log = fopen(warn_log_file, "w+");
+	if (!warn_log) {
+		fprintf(stderr, "could not create warn_log");
 		return 0;
 	}
 	trace_log = fopen(trace_log_file, "w+");
 	if (!trace_log) {
-		fprintf(stderr, "could not create tracer_log");
+		fprintf(stderr, "could not create trace_log");
 		return 0;
 	}
 	return 1;
@@ -35,4 +38,54 @@ void _log_trace(char *time, char *file, int line, char *msg)
 {
 	fprintf(trace_log, "[%s] [%s:%d] %s\n", time, file, line, msg);
 	fflush(trace_log); // writes all data left in FILE buffer
+}
+
+void _process_warn(char *time, char *file, int line, char *msg, ...)
+{
+	char subst_msg[SUBST_MSG_MAXLEN];
+	int subst_msg_iterator = 0;
+
+	int i_val;
+	int i_digits;
+	double d_val;
+	int d_digits;
+
+	va_list arg_p; // init a variable of va_list type to point it to the list later
+	va_start(arg_p, msg); // arg_p now points to msg so that it can progress to the following args
+	
+	for (char *p = msg; *p; p++) {
+		if (*p != '%') {
+			subst_msg[subst_msg_iterator++] = *p;
+			continue;
+		}
+		switch (*(++p)) {
+			case 'd':
+				i_val = va_arg(arg_p, int);
+
+				// int to character string
+				for (i_digits = 1; i_val / pow(10, (i_digits-1)); i_digits++)
+					; // do nothing
+				for (; i_digits > 0; i_digits--) {
+					// nochmal exact nachschauen wieso ascii 0 den int zu char macht
+					subst_msg[subst_msg_iterator++] = (i_val / pow(10, (i_digits-1))) + '0';
+					i_val -= pow(10, (i_digits-1));
+					assert(i_val >= 0);
+				}
+				break;
+			case 'f':
+				d_val = va_arg(arg_p, double);
+				break;
+
+			// ival to character string and wirte into msg_string
+			default:
+				subst_msg[subst_msg_iterator++] = *p;
+				break;
+		}
+	}
+	
+
+
+	
+	fprintf(warn_log, "[%s] [%s:%d] %s\n", time, file, line, subst_msg);
+	fflush(warn_log); // writes all data left in FILE buffer
 }

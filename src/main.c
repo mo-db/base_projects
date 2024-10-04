@@ -23,14 +23,16 @@
 
 int main()
 {
-	if (!log_init(ERROR_LOGFILE, TRACE_LOGFILE)) {
+	if (!log_init(WARN_LOGFILE, TRACE_LOGFILE)) {
 		return 1;
 	}
 	LOG_TRACE("logging system and error handling initialized");
+	PROCESS_WARN("warning system initialized: %d to test", 10);
 
-
+	/*
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_TIMER) != 0) {
-		PROCESS_ERROR("SDL initialization failure!");
+		//PROCESS_ERROR("SDL initialization failure!");
+		fprintf(stderr, "bla");
 		return 1;
 	}
 	LOG_TRACE("SDL initialized");
@@ -79,8 +81,11 @@ int main()
 		if (!render(main_window_p, main_sp_p)) {
 			return 1;
 		}
+
 	}
 	SDL_DestroyWindow(main_window_p->window);
 	SDL_Quit();
+	*/
+
 	return 0;
 }
