@@ -1,6 +1,6 @@
 ### CONFIG
 # specify source files: if no specified -> fetches all source files
-FILES := main debug video state logic objects
+FILES := main debug
 
 # Makefile needs tab not spaces before recepie command
 SRC_DIR := src
