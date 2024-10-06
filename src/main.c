@@ -27,7 +27,7 @@ int main()
 		return 1;
 	}
 	LOG_TRACE("logging system and error handling initialized");
-	PROCESS_WARN("warning system initialized: %d to test", 53);
+	PROCESS_WARN("warning system initialized: %d to %f test", 53, 53.244);
 
 	/*
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_TIMER) != 0) {

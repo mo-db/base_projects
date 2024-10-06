@@ -40,15 +40,16 @@ void _log_trace(char *time, char *file, int line, char *msg)
 	fflush(trace_log); // writes all data left in FILE buffer
 }
 
+// TODO: better errorhandling, print no 0 after float, 
 void _process_warn(char *time, char *file, int line, char *msg, ...)
 {
 	char subst_msg[SUBST_MSG_MAXLEN];
+	char double_buf[NUM_MAXELN];
 	int subst_msg_iterator = 0;
 
 	int i_val = 0;
 	int i_digits;
 	double d_val = 0;
-	double d_digits;
 
 	va_list arg_p; // init a variable of va_list type to point it to the list later
 	va_start(arg_p, msg); // arg_p now points to msg so that it can progress to the following args
@@ -61,22 +62,27 @@ void _process_warn(char *time, char *file, int line, char *msg, ...)
 		switch (*(++p)) {
 			case 'd':
 				i_val = va_arg(arg_p, int);
-				printf("i_val: %d\n", i_val);
-
 				// int to character string
 				for (i_digits = 0; (i_val / pow(10, i_digits)) >= 1; i_digits++)
 					; // do nothing
 				for (; i_digits > 0; i_digits--) {
-					printf("i_digits: %d\n", i_digits);
-					// nochmal exact nachschauen wieso ascii 0 den int zu char macht
-					int zwischenval = (i_val / pow(10, (i_digits - 1))); // zwischenval NAME!!!
-					subst_msg[subst_msg_iterator++] = zwischenval + '0';
-					i_val -= zwischenval * pow(10, (i_digits - 1));
+					// TODO: nochmal exact nachschauen wieso ascii 0 den int zu char macht
+					int division_portion = (i_val / pow(10, (i_digits - 1))); // zwischenval NAME!!!
+					subst_msg[subst_msg_iterator++] = division_portion + '0';
+					i_val -= division_portion * pow(10, (i_digits - 1));
 					assert(i_val >= 0);
 				}
 				break;
 			case 'f':
 				d_val = va_arg(arg_p, double);
+				int len = snprintf(NULL, 0, "%f", d_val);
+				if (len > NUM_MAXELN) {
+					len = NUM_MAXELN; // truncate number if to big - log?
+				}
+				snprintf(double_buf, len, "%f", d_val);
+				for (int i = 0; i < len; i++) {
+					subst_msg[subst_msg_iterator++] = double_buf[i];
+				}
 				break;
 
 			// ival to character string and wirte into msg_string
@@ -85,10 +91,7 @@ void _process_warn(char *time, char *file, int line, char *msg, ...)
 				break;
 		}
 	}
-	
-
-
-	
 	fprintf(warn_log, "[%s] [%s:%d] %s\n", time, file, line, subst_msg);
+	fprintf(stdout, "[%s] [%s:%d] %s\n", time, file, line, subst_msg);
 	fflush(warn_log); // writes all data left in FILE buffer
 }

@@ -10,6 +10,7 @@
 	"/software_renderer/bin/trace.log"
 
 #define SUBST_MSG_MAXLEN 200
+#define NUM_MAXELN 25
 
 /* #define PROCESS_ERROR(msg) _process_error(__TIME__, __FILE__, __LINE__, msg) */
 #define LOG_TRACE(msg) _log_trace(__TIME__, __FILE__, __LINE__, msg)
