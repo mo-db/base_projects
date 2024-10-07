@@ -26,8 +26,9 @@ int main()
 	if (!log_init(WARN_LOGFILE, TRACE_LOGFILE)) {
 		return 1;
 	}
-	LOG_TRACE("logging system and error handling initialized");
-	PROCESS_WARN("warning system initialized: %d to %f test", 53, 53.244);
+	/* PROCESS_TRACE("logging system and error handling initialized"); */
+	PROCESS_WARN("int:  float:int:  aus");
+	LOG_TRACE("hallo");
 
 	/*
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_TIMER) != 0) {
