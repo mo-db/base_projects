@@ -27,8 +27,11 @@ int main()
 		return 1;
 	}
 	/* PROCESS_TRACE("logging system and error handling initialized"); */
-	PROCESS_WARN("int:  float:int:  aus");
-	LOG_TRACE("hallo");
+
+	PROCESS_WARN("hallo! %d %f duda", 5, 12.3);
+	PROCESS_WARN("hallo! %d %f werda", 8, 12.9);
+	PROCESS_TRACE("hallo! ihrda");
+	PROCESS_ERROR("hallo!");
 
 	/*
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_TIMER) != 0) {
