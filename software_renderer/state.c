@@ -1,7 +1,6 @@
 #include <SDL2/SDL.h>
 #include "state.h"
 #include "logic.h"
-#include "debug.h"
 #include "video.h"
 #include "objects.h"
 #include <stdlib.h>

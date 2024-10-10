@@ -1,4 +1,4 @@
-#include "debug.h"
+#include "../base/debug2.h"
 #include "video.h"
 #include "state.h"
 #include "logic.h"

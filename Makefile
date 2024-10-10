@@ -1,24 +1,42 @@
-### CONFIG
-# specify source files: if no specified -> fetches all source files
-FILES := main debug video objects logic state
+# TODO: restructure makefile and project, use "make base" to build the library
+# folder as static library files
 
-# Makefile needs tab not spaces before recepie command
-# TODO: build rule for each source directory or make it a flag
-# -> or not, if not edit source manuell and clean if changing source 
-# - automate cleaning if changing source?
-SRC_DIR := software_renderer
+### CONFIG
+# specify source files
+#PROJECT_FILES := main video objects logic state
+PROJECT_FILES :=
+BASE_FILES := debug2
+
+# specify the directory names, PROJECT_SRC_DIR is the project, base is my base code
+PROJECT_SRC_DIR := software_renderer
+BASE_SRC_DIR := base
 OBJ_DIR := obj
 BIN_DIR := bin
 
-# strip to make sure that " " are not count
-# when checking if files are specified, else fetch all
-ifneq ($(strip $(FILES)),)
-	SRC := $(addprefix $(SRC_DIR)/, $(addsuffix .c, $(FILES)))
-	OBJ := $(addprefix $(OBJ_DIR)/, $(addsuffix .o, $(FILES)))
+# create paths PROJECT_FILES, strip to make sure that " " are not count
+# check if PROJECT_FILES variable is empty, if so create paths for * files
+ifneq ($(strip $(PROJECT_FILES)),)
+	#SRC := $(addprefix $(PROJECT_SRC_DIR)/, $(addsuffix .c, $(PROJECT_FILES)))
+	OBJ := $(addprefix $(OBJ_DIR)/, $(addsuffix .o, $(PROJECT_FILES)))
 else
-	SRC := $(wildcard $(SRC_DIR)/*.c)
-	OBJ := $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+	SRC := $(wildcard $(PROJECT_SRC_DIR)/*.c)
+	OBJ := $(SRC:$(PROJECT_SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 endif
+
+# create the paths for BASE_FILES
+# SRC := $(SRC) $(addprefix $(BASE_SRC_DIR)/, $(addsuffix .c, $(BASE_FILES)))
+# OBJ := $(OBJ) $(addprefix $(OBJ_DIR)/, $(addsuffix .o, $(BASE_FILES)))
+
+ifneq ($(strip $(BASE_FILES)),)
+	#SRC := $(addprefix $(BASE_SRC_DIR)/, $(addsuffix .c, $(BASE_FILES)))
+	OBJ := $(OBJ) $(addprefix $(OBJ_DIR)/, $(addsuffix .o, $(BASE_FILES)))
+else
+	SRC := $(SRC) $(wildcard $(BASE_SRC_DIR)/*.c)
+	OBJ := $(OBJ) $(SRC:$(BASE_SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+endif
+
+
+# the path fo the final executable
 EXE := $(BIN_DIR)/a.out
 
 # Helper vars
@@ -33,7 +51,7 @@ CFLAGS := -Wall -g -MMD -MP $(SDL2_CFLAGS)
 LDFLAGS := $(SDL2_LIBS)
 LIBS :=
 
-
+# TODO: make base_lib, make proj
 
 ### MAIN BUILD PROCESS
 # Phony targets aren't treated as files
@@ -42,14 +60,21 @@ LIBS :=
 # Default target, executed with 'make' command
 all: $(EXE)
 
+# Execute immediatelly after building
+run: $(EXE)
+	./bin/a.out
+
 # run dsymutil to extract debug info into seperate file
 # Linking the object files, building executable
-$(EXE): $(OBJ) | $(BIN_DIR) $(SRC_DIR)
+$(EXE): $(OBJ) | $(BIN_DIR)
 	$(CC) $(LDFLAGS) $^ -o $@ $(LIBS)
 	dsymutil $@
 
 # All compilation steps except linking for every source file
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR) $(SRC_DIR)
+$(OBJ_DIR)/%.o: $(PROJECT_SRC_DIR)/%.c | $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/%.o: $(BASE_SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # check header files for changes
@@ -58,13 +83,11 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR) $(SRC_DIR)
 
 
 ### OTHER TARGETS
-# make and execute
-run: $(EXE)
-	./bin/a.out
+
 
 # to be able to debug a single file, -E = run preprocessor only
 single:
-	$(CC) $(CFLAGS) -E $(SRC_DIR)/debug.c | tee single.info
+	$(CC) $(CFLAGS) -E $(PROJECT_SRC_DIR)/debug.c | tee single.info
 
 # Using implicit variable RM (rm -f)
 clean:
@@ -75,5 +98,5 @@ clean:
 # targets : normal-prerequisites | order-only-prerequisites
 # order-only-prerequisites are never checked for out of date
 # they are ckecked before the target is built
-$(SRC_DIR) $(OBJ_DIR) $(BIN_DIR):
+$(PROJECT_SRC_DIR) $(OBJ_DIR) $(BIN_DIR):
 	mkdir -p $@

@@ -1,5 +1,5 @@
 #include "video.h"
-#include "debug.h"
+#include "../base/debug2.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
