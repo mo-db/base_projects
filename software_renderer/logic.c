@@ -22,7 +22,7 @@ static int *calculate_bit_digits(int number)
 		PROCESS_ERROR("Couldn't allocate digits ary");
 		return NULL;
 	}
-	LOG_TRACE("malloc digits ary");
+	PROCESS_TRACE("malloc digits ary");
 	digits[0] = ary_length;
 
 	for (int i = 1; i < ary_length; i++) {

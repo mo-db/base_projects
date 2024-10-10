@@ -1,6 +1,6 @@
 ### CONFIG
 # specify source files: if no specified -> fetches all source files
-FILES := main debug
+FILES := main debug video objects logic state
 
 # Makefile needs tab not spaces before recepie command
 # TODO: build rule for each source directory or make it a flag

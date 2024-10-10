@@ -26,36 +26,29 @@ int main()
 	if (!log_init(WARN_LOGFILE, TRACE_LOGFILE)) {
 		return 1;
 	}
-	/* PROCESS_TRACE("logging system and error handling initialized"); */
+	PROCESS_TRACE("logging system and error handling initialized");
 
-	PROCESS_WARN("hallo! %d %f duda", 5, 12.3);
-	PROCESS_WARN("hallo! %d %f werda", 8, 12.9);
-	PROCESS_TRACE("hallo! ihrda");
-	PROCESS_ERROR("hallo!");
 
-	/*
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_TIMER) != 0) {
-		//PROCESS_ERROR("SDL initialization failure!");
+		PROCESS_ERROR("SDL initialization failure!");
 		fprintf(stderr, "bla");
 		return 1;
 	}
-	LOG_TRACE("SDL initialized");
-
-	//TODO: need something like other_init() or maybe state init? init for each import?
-	// maybe have a struct with the state and give that struct to the update etc functions - so it's easier on the eyes and better maybe!
-	pixel_counter = 1;
+	PROCESS_TRACE("SDL initialized");
 
 	struct window *main_window_p = new_window_and_surface(INIT_WIDTH, INIT_HEIGHT);
 	if (!main_window_p) {
+		PROCESS_ERROR("Window/Surface couldn't be created!");
 		return 1;
 	}
-	LOG_TRACE("main_window struct created");
+	PROCESS_TRACE("main_window struct created");
 
 	struct scaled_pixelbuf *main_sp_p = new_scaled_pixelbuf_form_window(SCALING_FACTOR, main_window_p);
 	if (!main_sp_p) {
+		PROCESS_ERROR("Scaled Pixelbuf couldn't be created!");
 		return 1;
 	}
-	LOG_TRACE("Scaled pixel buffer created");
+	PROCESS_TRACE("Scaled pixel buffer created");
 
 	// main loop
 	SDL_Event event;
@@ -89,7 +82,6 @@ int main()
 	}
 	SDL_DestroyWindow(main_window_p->window);
 	SDL_Quit();
-	*/
 
 	return 0;
 }
