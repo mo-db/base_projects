@@ -23,9 +23,7 @@
 
 int main()
 {
-	if (!log_init(WARN_LOGFILE, TRACE_LOGFILE)) {
-		return 1;
-	}
+	if (!log_init()) { return 1; }
 	PROCESS_TRACE("logging system and error handling initialized");
 
 

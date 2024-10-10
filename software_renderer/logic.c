@@ -84,7 +84,6 @@ int draw_line_simple(struct scaled_pixelbuf *sp_p, struct point p1, struct point
 		y = m * (x - p1.x) + p1.y;
 		plot_value = (x - 1) + ((sp_p->height - y) * sp_p->width);
 
-		printf("plot_value: %d\n", plot_value);
 		//TODO: How do i do that???
 		//LOG_TRACE("plot_value: %d", 1);
 

@@ -8,14 +8,14 @@
 FILE *warn_log;
 FILE *trace_log;
 
-int log_init(const char *warn_logfile, const char *trace_logfile)
+int log_init()
 {
-	warn_log = fopen(warn_logfile, "w+");
+	warn_log = fopen(WARN_LOG, "w+");
 	if (!warn_log) {
 		fprintf(stderr, "could not create warn_log");
 		return 0;
 	}
-	trace_log = fopen(trace_logfile, "w+");
+	trace_log = fopen(TRACE_LOG, "w+");
 	if (!trace_log) {
 		fprintf(stderr, "could not create trace_log");
 		return 0;

@@ -4,6 +4,8 @@ FILES := main debug video objects logic state
 
 # Makefile needs tab not spaces before recepie command
 # TODO: build rule for each source directory or make it a flag
+# -> or not, if not edit source manuell and clean if changing source 
+# - automate cleaning if changing source?
 SRC_DIR := software_renderer
 OBJ_DIR := obj
 BIN_DIR := bin

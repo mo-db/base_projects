@@ -4,10 +4,8 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
 
-#define WARN_LOGFILE "/Users/moritz/Repos" \
-	"/software_renderer/bin/warn.log"
-#define TRACE_LOGFILE "/Users/moritz/Repos" \
-	"/software_renderer/bin/trace.log"
+#define WARN_LOG "bin/warn.log"
+#define TRACE_LOG "bin/trace.log"
 
 #define SUBST_MSG_MAXLEN 200
 #define NUM_MAXELN 20
@@ -17,7 +15,7 @@
 #define PROCESS_WARN(msg, ...) _gen_msg(2, __TIME__, __FILE__, __LINE__, msg, ##__VA_ARGS__)
 #define PROCESS_TRACE(msg, ...) _gen_msg(3, __TIME__, __FILE__, __LINE__, msg, ##__VA_ARGS__)
 
-int log_init(const char * warn_logfile, const char * trace_logfile);
+int log_init();
 
 // clang format attribute (same as gcc) to handle like printf function -> linting
 __attribute__((__format__(__printf__, 5, 6)))
