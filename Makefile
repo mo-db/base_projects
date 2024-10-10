@@ -3,7 +3,8 @@
 FILES := main debug
 
 # Makefile needs tab not spaces before recepie command
-SRC_DIR := src
+# TODO: build rule for each source directory or make it a flag
+SRC_DIR := software_renderer
 OBJ_DIR := obj
 BIN_DIR := bin
 
