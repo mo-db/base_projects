@@ -5,11 +5,9 @@
 # specify source files
 #PROJECT_FILES := main video objects logic state
 PROJECT_FILES :=
-BASE_FILES :=
 
 # specify the directory names, PROJECT_SRC_DIR is the project, base is my base code
 PROJECT_SRC_DIR := software_renderer
-BASE_SRC_DIR := base
 OBJ_DIR := obj
 BIN_DIR := bin
 
@@ -27,13 +25,6 @@ endif
 # SRC := $(SRC) $(addprefix $(BASE_SRC_DIR)/, $(addsuffix .c, $(BASE_FILES)))
 # OBJ := $(OBJ) $(addprefix $(OBJ_DIR)/, $(addsuffix .o, $(BASE_FILES)))
 
-ifneq ($(strip $(BASE_FILES)),)
-	#SRC := $(addprefix $(BASE_SRC_DIR)/, $(addsuffix .c, $(BASE_FILES)))
-	OBJ := $(OBJ) $(addprefix $(OBJ_DIR)/, $(addsuffix .o, $(BASE_FILES)))
-else
-	SRC := $(SRC) $(wildcard $(BASE_SRC_DIR)/*.c)
-	OBJ := $(OBJ) $(SRC:$(BASE_SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
-endif
 
 
 # the path fo the final executable
@@ -42,57 +33,66 @@ EXE := $(BIN_DIR)/a.out
 # Helper vars
 # SDL3_FLAGS := $(shell pkg-config --libs --cflags sdl3)
 SDL2_CFLAGS := $(shell sdl2-config --cflags)
-SDL2_LIBS:= $(shell sdl2-config --static-libs)
+SDL2_LDFLAGS:= $(shell sdl2-config --static-libs)
 RL_FLAGS := -framework CoreVideo -framework IOKit -framework Cocoa -framework GLUT -framework OpenGL /usr/local/lib/libraylib.a
 
 # -g = include debug info, -O0/1/2 = optimization
 # -MMD -MP to create .d files for header deps
 CFLAGS := -Wall -g -MMD -MP $(SDL2_CFLAGS)
-LDFLAGS := $(SDL2_LIBS) -L/Users/moritz/Repos/base_projects/base -llibtest
-LIBS :=
+LDFLAGS := -L/Users/moritz/Repos/base_projects/base -llibtest $(SDL2_LDFLAGS)
 
 # TODO: make base_lib, make proj
 
 ### MAIN BUILD PROCESS
 # Phony targets aren't treated as files
-.PHONY: all run clean single
+.PHONY: all base run clean single
 
 # Default target, executed with 'make' command
-all: $(EXE)
+project: $(EXE)
 
 # Execute immediatelly after building
 run: $(EXE)
 	./bin/a.out
 
-# run dsymutil to extract debug info into seperate file
-# Linking the object files, building executable
-$(EXE): $(OBJ) | $(BIN_DIR)
+# Main executable target for the project
+$(EXE): $(OBJ) | $(BIN_DIR) # normal-prerequisites | order-only-prerequisites
 	$(CC) $(LDFLAGS) $^ -o $@
-	dsymutil $@
+	dsymutil $@ # run dsymutil to extract debug info into seperate file
 
 # All compilation steps except linking for every source file
 $(OBJ_DIR)/%.o: $(PROJECT_SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/%.o: $(BASE_SRC_DIR)/%.c | $(OBJ_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
 
-# check header files for changes
--include $(OBJ:.o=.d)
+# build codebase library
+BASE_SRC:=
+BASE_DIR := base
+BASE_SRC_DIR := $(BASE_DIR)/src
+BASE_OBJ_DIR := $(BASE_DIR)/obj
+BASE_LIB_DIR := $(BASE_DIR)/lib
+BASE_INCLUDE_DIR := $(BASE_DIR)/include
 
+LIB := $(BASE_LIB_DIR)/libbase.a
 
+ifneq ($(strip $(BASE_SRC)),)
+	BASE_OBJ := $(addprefix $(BASE_OBJ_DIR)/, $(addsuffix .o, $(BASE_SRC)))
+else
+	BASE_SRC := $(wildcard $(BASE_SRC_DIR)/*.c)
+	BASE_OBJ := $(BASE_SRC:$(BASE_SRC_DIR)/%.c=$(BASE_OBJ_DIR)/%.o)
+endif
 
-### OTHER TARGETS
+base: $(LIB)
 
+$(LIB): $(BASE_OBJ) | $(BASE_LIB_DIR)
+	ar -rc $@ $(BASE_OBJ)
 
-# to be able to debug a single file, -E = run preprocessor only
-single:
-	$(CC) $(CFLAGS) -E $(PROJECT_SRC_DIR)/debug.c | tee single.info
+$(BASE_OBJ_DIR)/%.o: $(BASE_SRC_DIR)/%.c
+	$(CC) -Wall -g -MMD -MP -c $< -I./$(BASE_INCLUDE_DIR) -o $@
 
 # Using implicit variable RM (rm -f)
 clean:
 	@$(RM) -r $(OBJ_DIR) $(BIN_DIR)
-	@$(RM) single.info
+	@$(RM) $(BASE_OBJ_DIR)/*
 
 # Make sure directories exist
 # targets : normal-prerequisites | order-only-prerequisites
@@ -100,3 +100,7 @@ clean:
 # they are ckecked before the target is built
 $(PROJECT_SRC_DIR) $(OBJ_DIR) $(BIN_DIR):
 	mkdir -p $@
+
+# check header files for changes
+-include $(OBJ:.o=.d)
+-include $(BASE_OBJ:.o=.d)
