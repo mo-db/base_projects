@@ -1,6 +1,6 @@
 #include <SDL2/SDL.h>
+#include "../base/include/libbase.h"
 #include "logic.h"
-#include "../base/debug2.h"
 #include "video.h"
 #include "objects.h"
 #include <stdlib.h>
@@ -18,15 +18,15 @@ static int *calculate_bit_digits(int number)
 	int ary_length = (n_digits + 1);
 	int *digits = malloc(sizeof(int) * ary_length);
 	if (!digits) {
-		PROCESS_ERROR("Couldn't allocate digits ary");
+		B_PROCESS_ERROR("Couldn't allocate digits ary");
 		return NULL;
 	}
-	PROCESS_TRACE("malloc digits ary");
+	B_PROCESS_TRACE("malloc digits ary");
 	digits[0] = ary_length;
 
 	for (int i = 1; i < ary_length; i++) {
 		if (i >= digits[0]) {
-			PROCESS_ERROR("would be out of bounds, crashing here");
+			B_PROCESS_ERROR("would be out of bounds, crashing here");
 			return NULL;
 		}
 		digits[i] = number / (int)pow(10, (n_digits - (i)));
@@ -57,7 +57,7 @@ int draw_number(struct scaled_pixelbuf *sp_p, int number, Uint32 x_offset, Uint3
 				} else if (BIT_DIGITS[digits[m]][(i * BD_WIDTH) + j] == 0) {
 					;
 				} else {
-					PROCESS_ERROR("no bit value in bitmap!");
+					B_PROCESS_ERROR("no bit value in bitmap!");
 					return 0;
 				}
 			}
@@ -87,7 +87,7 @@ int draw_line_simple(struct scaled_pixelbuf *sp_p, struct point p1, struct point
 		//LOG_TRACE("plot_value: %d", 1);
 
 		if (plot_value > sp_p->n_pixels) {
-			PROCESS_ERROR("buffer overflow drawing line!");
+			B_PROCESS_ERROR("buffer overflow drawing line!");
 			return 0;
 		} else {
 			sp_p->buf[plot_value] = 0xFFFF0000;

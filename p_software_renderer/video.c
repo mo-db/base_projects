@@ -1,5 +1,5 @@
 #include "video.h"
-#include "../base/debug2.h"
+#include "../base/include/libbase.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
@@ -7,7 +7,7 @@
 struct window *new_window_and_surface(Uint32 width, Uint32 height)
 {
 	struct window *window_p = malloc(sizeof(struct window));
-	PROCESS_TRACE("malloc struct winodow");
+	B_PROCESS_TRACE("malloc struct winodow");
     window_p->width = width;
     window_p->height = height;
     window_p->n_pixels = width * height;
@@ -15,17 +15,17 @@ struct window *new_window_and_surface(Uint32 width, Uint32 height)
 	window_p->window = SDL_CreateWindow("Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 									 width, height, SDL_WINDOW_METAL);
 	if (!window_p->window) {
-		PROCESS_ERROR("Could't create window!");
+		B_PROCESS_ERROR("Could't create window!");
         return NULL;
 	}
-	PROCESS_TRACE("created SDL window");
+	B_PROCESS_TRACE("created SDL window");
 
 	window_p->surface = SDL_GetWindowSurface(window_p->window);
 	if (!window_p->surface) {
-		PROCESS_ERROR("Could't create surface!");
+		B_PROCESS_ERROR("Could't create surface!");
         return NULL;
 	}
-	PROCESS_TRACE("created SDL surface");
+	B_PROCESS_TRACE("created SDL surface");
 
 
 	window_p->buf = (Uint32 *)window_p->surface->pixels;
@@ -43,10 +43,10 @@ struct scaled_pixelbuf *new_scaled_pixelbuf_form_window(Uint8 scaling_factor,
 {
 	struct scaled_pixelbuf *scaled_pixelbuf_p = malloc(sizeof(struct scaled_pixelbuf));
 	if (!scaled_pixelbuf_p) {
-		PROCESS_ERROR("Could't create scaled_pixelbuf struct!");
+		B_PROCESS_ERROR("Could't create scaled_pixelbuf struct!");
 		return NULL;
 	}
-	PROCESS_TRACE("malloc struct for scaled pixelbuf struct");
+	B_PROCESS_TRACE("malloc struct for scaled pixelbuf struct");
 
     scaled_pixelbuf_p->scaling_factor = scaling_factor;
     scaled_pixelbuf_p->width = window_p->width / scaling_factor;
@@ -55,10 +55,10 @@ struct scaled_pixelbuf *new_scaled_pixelbuf_form_window(Uint8 scaling_factor,
 	
 	scaled_pixelbuf_p->buf = malloc(scaled_pixelbuf_p->n_pixels * sizeof(Uint32));
     if (!scaled_pixelbuf_p->buf) {
-		PROCESS_ERROR("Could't create scaled_pixelbuf buf!");
+		B_PROCESS_ERROR("Could't create scaled_pixelbuf buf!");
         return NULL;
     }
-	PROCESS_TRACE("malloc struct for scaled pixelbuf buffer");
+	B_PROCESS_TRACE("malloc struct for scaled pixelbuf buffer");
 
 	for (int i = 0; i < scaled_pixelbuf_p->n_pixels; i++) {
 		scaled_pixelbuf_p->buf[i] = 0xFFFFFFFF;

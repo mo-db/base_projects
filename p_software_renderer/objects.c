@@ -1,8 +1,9 @@
 // test
 #include "objects.h"
+#include <stdint.h>
 #include <SDL2/SDL.h>
 
-static const Uint8 BD_1[] = {
+static const uint8_t BD_1[] = {
 	0, 0, 1, 0, 0,
 	0, 1, 1, 0, 0,
 	0, 0, 1, 0, 0,
@@ -12,7 +13,7 @@ static const Uint8 BD_1[] = {
 	1, 1, 1, 1, 1
 };
 
-static const Uint8 BD_2[] = {
+static const uint8_t BD_2[] = {
 	0, 1, 1, 1, 0,
 	1, 0, 0, 0, 1,
 	0, 0, 0, 0, 1,
@@ -22,7 +23,7 @@ static const Uint8 BD_2[] = {
 	1, 1, 1, 1, 1
 };
 
-static const Uint8 BD_3[] = {
+static const uint8_t BD_3[] = {
 	0, 1, 1, 1, 0,
 	1, 0, 0, 0, 1,
 	0, 0, 0, 0, 1,
@@ -32,7 +33,7 @@ static const Uint8 BD_3[] = {
 	0, 1, 1, 1, 0
 };
 
-static const Uint8 BD_4[] = {
+static const uint8_t BD_4[] = {
 	0, 1, 0, 0, 1,
 	0, 1, 0, 0, 1,
 	1, 0, 0, 0, 1,
@@ -42,7 +43,7 @@ static const Uint8 BD_4[] = {
 	0, 0, 0, 0, 1
 };
 
-static const Uint8 BD_5[] = {
+static const uint8_t BD_5[] = {
 	1, 1, 1, 1, 1,
 	1, 0, 0, 0, 0,
 	1, 0, 0, 0, 0,
@@ -52,7 +53,7 @@ static const Uint8 BD_5[] = {
 	0, 1, 1, 1, 0
 };
 
-static const Uint8 BD_6[] = {
+static const uint8_t BD_6[] = {
 	0, 1, 1, 1, 0,
 	1, 0, 0, 0, 0,
 	1, 0, 0, 0, 0,
@@ -62,7 +63,7 @@ static const Uint8 BD_6[] = {
 	0, 1, 1, 1, 0
 };
 
-static const Uint8 BD_7[] = {
+static const uint8_t BD_7[] = {
 	1, 1, 1, 1, 1,
 	0, 0, 0, 0, 1,
 	0, 0, 0, 0, 1,
@@ -72,7 +73,7 @@ static const Uint8 BD_7[] = {
 	0, 1, 1, 0, 0
 };
 
-static const Uint8 BD_8[] = {
+static const uint8_t BD_8[] = {
 	0, 1, 1, 1, 0,
 	1, 0, 0, 0, 1,
 	1, 0, 0, 0, 1,
@@ -82,7 +83,7 @@ static const Uint8 BD_8[] = {
 	0, 1, 1, 1, 0
 };
 
-static const Uint8 BD_9[] = {
+static const uint8_t BD_9[] = {
 	0, 1, 1, 1, 0,
 	1, 0, 0, 0, 1,
 	1, 0, 0, 0, 1,
@@ -92,7 +93,7 @@ static const Uint8 BD_9[] = {
 	0, 1, 1, 1, 0
 };
 
-static const Uint8 BD_0[] = {
+static const uint8_t BD_0[] = {
 	0, 1, 1, 1, 0,
 	1, 0, 0, 0, 1,
 	1, 0, 0, 1, 1,
@@ -102,7 +103,7 @@ static const Uint8 BD_0[] = {
 	0, 1, 1, 1, 0
 };
 
-const Uint8 *BIT_DIGITS[] = {
+const uint8_t *BIT_DIGITS[] = {
 	BD_0,
 	BD_1,
 	BD_2,

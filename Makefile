@@ -1,14 +1,14 @@
 ### Actual Project
-SRC_FILES := test
-SRC_DIR := software_renderer
+SRC_FILES := main video state logic objects
+SRC_DIR := p_software_renderer
 
 SDL2_CFLAGS := $(shell sdl2-config --cflags)
 SDL2_LDFLAGS:= $(shell sdl2-config --static-libs)
 
 # -g = include debug info, -O0/1/2 = optimization
 # -MMD -MP to create .d files for header deps
-CFLAGS := -Wall -g -MMD -MP
-LDFLAGS := -L./base/lib -lbase
+CFLAGS := -Wall -g -MMD -MP $(SDL2_CFLAGS)
+LDFLAGS := -L./base/lib -lbase $(SDL2_LDFLAGS)
 
 OBJ_DIR := obj
 BIN_DIR := bin
