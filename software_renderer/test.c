@@ -3,7 +3,7 @@
 
 int main()
 {
-	if (!log_init()) { fprintf(stdout, "error log_init"); };
-	PROCESS_WARN("a warning test");
+	if (!b_log_init()) { fprintf(stdout, "error log_init"); };
+	B_PROCESS_WARN("a warning test");
 	return 0;
 }

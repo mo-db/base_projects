@@ -8,14 +8,14 @@
 FILE *warn_log;
 FILE *trace_log;
 
-int log_init()
+int b_log_init()
 {
-	warn_log = fopen(WARN_LOG, "w+");
+	warn_log = fopen(B_WARN_LOG, "w+");
 	if (!warn_log) {
 		fprintf(stderr, "could not create warn_log");
 		return 0;
 	}
-	trace_log = fopen(TRACE_LOG, "w+");
+	trace_log = fopen(B_TRACE_LOG, "w+");
 	if (!trace_log) {
 		fprintf(stderr, "could not create trace_log");
 		return 0;
@@ -26,11 +26,11 @@ int log_init()
 void _gen_msg(int select, char *time, char *file, int line, char *msg, ...)
 {
 	// maybe subst_msg as pointer in log_init?
-	char subst_msg[SUBST_MSG_MAXLEN];
+	char subst_msg[B_DEBUG_SUBST_MSG_MAXLEN];
 	for (int i = 0; i < sizeof(subst_msg); i++) {
 		subst_msg[i] = '\0';
 	}
-	char double_buf[NUM_MAXELN];
+	char double_buf[B_DEBUG_NUM_MAX];
 	char trunc_buf[] = "__TRUNCATED__";
 	int subst_msg_iterator = 0;
 
@@ -52,8 +52,8 @@ void _gen_msg(int select, char *time, char *file, int line, char *msg, ...)
 				for (i_digits = 0; (i_val / pow(10, i_digits)) >= 1; i_digits++)
 					; // do nothing
 				// check number length, truncate if needed to keep log clean
-				if (i_digits > NUM_MAXELN) {
-					i_digits = NUM_MAXELN;
+				if (i_digits > B_DEBUG_NUM_MAX) {
+					i_digits = B_DEBUG_NUM_MAX;
 					for (int i = 0; i < (sizeof(trunc_buf) - 1); i++) {
 						subst_msg[subst_msg_iterator++] = trunc_buf[i];
 					}
@@ -71,13 +71,13 @@ void _gen_msg(int select, char *time, char *file, int line, char *msg, ...)
 				int cut, len;
 				// check number length,truncate if needed to keep log clean
 				len = snprintf(NULL, 0, "%.4f", d_val);
-				if (len > NUM_MAXELN) {
+				if (len > B_DEBUG_NUM_MAX) {
 					for (int i = 0; i < (sizeof(trunc_buf) - 1); i++) {
 						subst_msg[subst_msg_iterator++] = trunc_buf[i];
 					}
 				}
 				// insert float into subst_msg
-				snprintf(double_buf, NUM_MAXELN, "%.4f", d_val);
+				snprintf(double_buf, B_DEBUG_NUM_MAX, "%.4f", d_val);
 				for (cut = 0; double_buf[cut] != '\0'; cut++)
 					;
 				for (int i = 0; i < cut; i++) { // (len - 1) to cut /0 that would exit loop
