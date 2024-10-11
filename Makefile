@@ -5,7 +5,7 @@
 # specify source files
 #PROJECT_FILES := main video objects logic state
 PROJECT_FILES :=
-BASE_FILES := debug2
+BASE_FILES :=
 
 # specify the directory names, PROJECT_SRC_DIR is the project, base is my base code
 PROJECT_SRC_DIR := software_renderer
@@ -48,7 +48,7 @@ RL_FLAGS := -framework CoreVideo -framework IOKit -framework Cocoa -framework GL
 # -g = include debug info, -O0/1/2 = optimization
 # -MMD -MP to create .d files for header deps
 CFLAGS := -Wall -g -MMD -MP $(SDL2_CFLAGS)
-LDFLAGS := $(SDL2_LIBS)
+LDFLAGS := $(SDL2_LIBS) -L/Users/moritz/Repos/base_projects/base -llibtest
 LIBS :=
 
 # TODO: make base_lib, make proj
@@ -67,7 +67,7 @@ run: $(EXE)
 # run dsymutil to extract debug info into seperate file
 # Linking the object files, building executable
 $(EXE): $(OBJ) | $(BIN_DIR)
-	$(CC) $(LDFLAGS) $^ -o $@ $(LIBS)
+	$(CC) $(LDFLAGS) $^ -o $@
 	dsymutil $@
 
 # All compilation steps except linking for every source file

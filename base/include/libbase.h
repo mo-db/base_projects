@@ -1,9 +1,12 @@
-#ifndef DEBUG2_H
-#define DEBUG2_H
+#ifndef LIBBASE_H
+#define LIBBASE_H
 
 #include <stdio.h>
-#include <SDL2/SDL.h>
+//#include <SDL2/SDL.h>
 
+
+
+// trace_warn_error_handling
 #define WARN_LOG "bin/warn.log"
 #define TRACE_LOG "bin/trace.log"
 
@@ -20,5 +23,7 @@ int log_init();
 // clang format attribute (same as gcc) to handle like printf function -> linting
 __attribute__((__format__(__printf__, 5, 6)))
 void _gen_msg(int select, char *time, char *file, int line, char *msg, ...);
+
+
 
 #endif
