@@ -7,6 +7,12 @@
 #include <assert.h>
 #include <SDL2/SDL.h>
 
+// TODO: define two preprocessor states, one for a loop and one for static execution
+// like with the turtle program - use?
+// so would be per hand execution - wouldnt it be better to have cli input with loop?
+//
+// INFO: -> static input to begin with - should be better for turtle program
+
 /* TESTING */
 /* #ifdef TESTING */
 /* static const double TARGET_FPS = 1.0; */
