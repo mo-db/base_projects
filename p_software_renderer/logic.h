@@ -1,11 +1,10 @@
 #ifndef LOGIC_H
 #define LOGIC_H
 
-#include <SDL2/SDL.h>
 #include "video.h"
 #include "objects.h"
 
-int draw_number(struct scaled_pixelbuf *sp_p, int number, Uint32 x_offset, Uint32 y_offset);
+int draw_number(struct scaled_pixelbuf *sp_p, int number, uint32_t x_offset, uint32_t y_offset);
 
 /* points x,y values can range from 1 - sp_p->width,sp_p->height
  * that is until a system is implemented that can scale out of bound value

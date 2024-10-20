@@ -4,86 +4,54 @@
 #include <stdlib.h>
 #include <SDL2/SDL.h>
 
-struct window *new_window_and_surface(Uint32 width, Uint32 height)
-{
-	struct window *window_p = malloc(sizeof(struct window));
-	BASE_PROCESS_TRACE("malloc struct winodow");
-    window_p->width = width;
-    window_p->height = height;
-    window_p->n_pixels = width * height;
-
-	window_p->window = SDL_CreateWindow("Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-									 width, height, SDL_WINDOW_METAL);
-	if (!window_p->window) {
-		BASE_PROCESS_ERROR("Could't create window!");
-        return NULL;
-	}
-	BASE_PROCESS_TRACE("created SDL window");
-
-	window_p->surface = SDL_GetWindowSurface(window_p->window);
-	if (!window_p->surface) {
-		BASE_PROCESS_ERROR("Could't create surface!");
-        return NULL;
-	}
-	BASE_PROCESS_TRACE("created SDL surface");
-
-
-	window_p->buf = (Uint32 *)window_p->surface->pixels;
-	for (int i = 0; i < (window_p->n_pixels); i++) {
-		window_p->buf[i] = 0xFFFFFFFF;
-	}
-	fprintf(stderr, "test\n");
-    return window_p;
-}
 
 // maybe instead of this allocate whole pb struct dyncamically 
 // and also allocate the buf in the same malloc
-struct scaled_pixelbuf *new_scaled_pixelbuf_form_window(Uint8 scaling_factor,
-														struct window *window_p)
+struct scaled_pixelbuf *create_scaled_pixelbuf(Uint8 scaling_factor,
+														struct pixelbuf *buf)
 {
-	struct scaled_pixelbuf *scaled_pixelbuf_p = malloc(sizeof(struct scaled_pixelbuf));
-	if (!scaled_pixelbuf_p) {
-		BASE_PROCESS_ERROR("Could't create scaled_pixelbuf struct!");
+	struct scaled_pixelbuf *spbuf= malloc(sizeof(struct scaled_pixelbuf));
+	if (!spbuf) {
+		BASE_PROCESS_ERROR("Could't malloc struct scaled_pixelbuf!");
 		return NULL;
 	}
 	BASE_PROCESS_TRACE("malloc struct for scaled pixelbuf struct");
 
-    scaled_pixelbuf_p->scaling_factor = scaling_factor;
-    scaled_pixelbuf_p->width = window_p->width / scaling_factor;
-    scaled_pixelbuf_p->height = window_p->height / scaling_factor;
-    scaled_pixelbuf_p->n_pixels = scaled_pixelbuf_p->width * scaled_pixelbuf_p->height;
+    spbuf->scaling_factor = scaling_factor;
+    spbuf->width = buf->width / scaling_factor;
+    spbuf->height = buf->height / scaling_factor;
+    spbuf->n_pixels = spbuf->width * spbuf->height;
 	
-	scaled_pixelbuf_p->buf = malloc(scaled_pixelbuf_p->n_pixels * sizeof(Uint32));
-    if (!scaled_pixelbuf_p->buf) {
+	spbuf->buf = malloc(spbuf->n_pixels * sizeof(Uint32));
+    if (!spbuf->buf) {
 		BASE_PROCESS_ERROR("Could't create scaled_pixelbuf buf!");
         return NULL;
     }
 	BASE_PROCESS_TRACE("malloc struct for scaled pixelbuf buffer");
 
-	for (int i = 0; i < scaled_pixelbuf_p->n_pixels; i++) {
-		scaled_pixelbuf_p->buf[i] = 0xFFFFFFFF;
+	for (int i = 0; i < spbuf->n_pixels; i++) {
+		spbuf->buf[i] = 0xFFFFFFFF;
 	}
-    return scaled_pixelbuf_p;
+    return spbuf;
 }
 
-int render(struct window *window_p, struct scaled_pixelbuf *sp_p)
+int map_spbuf_to_buf(struct pixelbuf *buf, struct scaled_pixelbuf *spbuf)
 {
 	// j = the scaled pixel width, l = how may small pixels in withd
 	// k = how many small pixels in height
 	int j = 0;
 	// the parantheses with init_width are for testing
-	for (int i = 0; i < sp_p->n_pixels; i++) {
-		for (int k = 0; k < (sp_p->scaling_factor * window_p->width); k += window_p->width) {
-			for (int l = 0; l < sp_p->scaling_factor; l++) {
-				window_p->buf[j+l+k] = sp_p->buf[i];
+	for (int i = 0; i < spbuf->n_pixels; i++) {
+		for (int k = 0; k < (spbuf->scaling_factor * buf->width); k += buf->width) {
+			for (int l = 0; l < spbuf->scaling_factor; l++) {
+				buf->buf[j+l+k] = spbuf->buf[i];
 			}
 		}
-		if ((j + sp_p->scaling_factor) % window_p->width == 0) {
+		if ((j + spbuf->scaling_factor) % buf->width == 0) {
 			// -1 to calculate for the row the program is on the end of
-			j += (window_p->width * (sp_p->scaling_factor-1));
+			j += (buf->width * (spbuf->scaling_factor-1));
 		}
-		j += sp_p->scaling_factor;
+		j += spbuf->scaling_factor;
 	}
-	SDL_UpdateWindowSurface(window_p->window);
 	return 1;
 }

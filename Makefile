@@ -1,5 +1,5 @@
 ### Actual Project
-SRC_FILES := main video state logic objects
+SRC_FILES := main video state logic objects platform_interface
 SRC_DIR := p_software_renderer
 
 SDL2_CFLAGS := $(shell sdl2-config --cflags)
@@ -80,7 +80,7 @@ $(BASE_OBJ_DIR)/%.o: $(BASE_SRC_DIR)/%.c | $(BASE_OBJ_DIR)
 # Clean for rebuilt - Using implicit variable RM (rm -f)
 clean:
 	@$(RM) -r $(OBJ_DIR) $(BIN_DIR)
-	@$(RM) $(BASE_OBJ_DIR)/*
+	@$(RM) $(BASE_OBJ_DIR)/* $(BASE_LIB_DIR)/*
 
 # Make sure directories exist
 $(OBJ_DIR) $(BIN_DIR) $(BASE_OBJ_DIR) $(BASE_LIB_DIR):

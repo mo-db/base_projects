@@ -1,31 +1,36 @@
 #ifndef VIDEO_H
 #define VIDEO_H
 
-#include <SDL2/SDL.h>
+#include <stdint.h>
+#include "../base/include/libbase.h"
 
-struct window {
-	Uint32 width;
-	Uint32 height;
-	SDL_Window *window;
-	SDL_Surface *surface;
-	Uint32 *buf;
-    Uint32 n_pixels;
+struct window_data {
+	int width;
+	int height;
+};
+
+struct pixelbuf {
+	int width;
+	int height;
+	int n_pixels;
+	uint32_t *buf;
 };
 
 struct scaled_pixelbuf {
-    Uint32 width;
-    Uint32 height;
-    Uint32 n_pixels;
-    Uint8 scaling_factor;
-    Uint32 *buf;
+    int width;
+    int height;
+    int n_pixels;
+    uint8_t scaling_factor;
+    uint32_t *buf;
 };
 
-struct window *new_window_and_surface(Uint32 width, Uint32 height);
-struct scaled_pixelbuf *new_scaled_pixelbuf_form_window(Uint8 scaling_factor,
-														struct window *window);
+struct scaled_pixelbuf *create_scaled_pixelbuf(uint8_t scaling_factor, struct pixelbuf *pb);
+//int update_scaled_pixelbuf(struct pixelbuf *buf);
 
-int render(struct window *window_p, struct scaled_pixelbuf *sp_p);
+int map_spbuf_to_buf(struct pixelbuf *buf, struct scaled_pixelbuf *spbuf);
 
-int destroy_window_and_surface(struct window *window);
-int destroy_scaled_pixelbuf(struct scaled_pixelbuf *scaled_pb);
+//int destroy_struct_scaled_pixelbuf(struct scaled_pixelbuf *scaled_pb);
+//int destroy_struct_pixelbuf(struct pixelbuf *);
+//int destroy_struct_window_data(struct window_data *);
+
 #endif

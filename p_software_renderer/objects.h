@@ -1,7 +1,7 @@
 #ifndef OBJECTS_H
 #define OBJECTS_H
 
-#include <SDL2/SDL.h>
+#include <stdint.h>
 
 // BIT Digits
 #define BD_HEIGHT 7
@@ -11,7 +11,7 @@
 
 // BIT Digits
 // External tells the compiler that the var is defined elsewere -> no warning
-extern const Uint8 *BIT_DIGITS[BD_N];
+extern const uint8_t *BIT_DIGITS[BD_N];
 
 // Geometry
 struct point {

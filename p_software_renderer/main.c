@@ -1,11 +1,12 @@
 #include "../base/include/libbase.h"
+#include "platform_interface.h"
+#include <stdint.h>
 #include "video.h"
 #include "state.h"
 #include "logic.h"
 #include <stdlib.h>
 #include <stdint.h>
 #include <assert.h>
-#include <SDL2/SDL.h>
 
 // TODO: define two preprocessor states, one for a loop and one for static execution
 // like with the turtle program - use?
@@ -47,34 +48,57 @@
 
 int main()
 {
-	if (!b_log_init()) { return 1; }
-	BASE_PROCESS_TRACE("logging system and error handling initialized");
-
-
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS | SDL_INIT_TIMER) != 0) {
-		BASE_PROCESS_ERROR("SDL initialization failure!");
-		fprintf(stderr, "bla");
+	if (!base_log_init()) {
+		BASE_PROCESS_ERROR("Couldn't initialise logging and error system");
 		return 1;
 	}
-	BASE_PROCESS_TRACE("SDL initialized");
+	BASE_PROCESS_TRACE("Logging and error system initialized");
 
-	struct window *main_window_p = new_window_and_surface(INIT_WIDTH, INIT_HEIGHT);
-	if (!main_window_p) {
-		BASE_PROCESS_ERROR("Window/Surface couldn't be created!");
+	if (!platif_init()) {
+		BASE_PROCESS_ERROR("Couldn't initialise platfrom interface");
 		return 1;
 	}
-	BASE_PROCESS_TRACE("main_window struct created");
+	BASE_PROCESS_TRACE("Platform interface initialised");
 
-	struct scaled_pixelbuf *main_sp_p = new_scaled_pixelbuf_form_window(SCALING_FACTOR, main_window_p);
-	if (!main_sp_p) {
-		BASE_PROCESS_ERROR("Scaled Pixelbuf couldn't be created!");
+	void *main_window_handle = platif_create_window(INIT_WIDTH, INIT_HEIGHT);
+	if (!main_window_handle) {
+		BASE_PROCESS_ERROR("Window couldn't be created!");
 		return 1;
 	}
-	BASE_PROCESS_TRACE("Scaled pixel buffer created");
+	BASE_PROCESS_TRACE("Window created");
+
+
+	void *main_surface_handle = platif_get_window_surface(main_window_handle);
+	if (!main_surface_handle) {
+		BASE_PROCESS_ERROR("Couldn't get surface from window");
+		return 1;
+	}
+	BASE_PROCESS_TRACE("Surface created");
+
+	struct window_data *main_window_data = platif_get_window_data(main_window_handle);
+	if (!main_window_data) {
+		BASE_PROCESS_ERROR("Couldn't create struct window_data");
+		return 1;
+	}
+	BASE_PROCESS_TRACE("Struct window_data created");
+
+	struct pixelbuf *main_pixelbuf = platif_get_surface_pixelbuf(main_surface_handle);
+	if (!main_pixelbuf) {
+		BASE_PROCESS_ERROR("Couldn't create struct pixelbuf");
+		return 1;
+	}	
+	BASE_PROCESS_TRACE("Struct pixelbuf created");
+
+	struct scaled_pixelbuf *main_spbuf= create_scaled_pixelbuf(SCALING_FACTOR, main_pixelbuf);
+	if (!main_spbuf) {
+		BASE_PROCESS_ERROR("Scaled pixelbuf couldn't be created!");
+		return 1;
+	}
+	BASE_PROCESS_TRACE("Scaled pixelbuf created");
 
 	// main loop
 	SDL_Event event;
-	Uint8 keep_going = 1;
+	uint8_t keep_going = 1;
 	while (keep_going) {
 		// poll for events 
 		while (SDL_PollEvent(&event)) {
@@ -88,22 +112,25 @@ int main()
 			}
 		}
 		//TODO: Refactor later
-		if (pixel_counter == main_sp_p->height) {
+		if (pixel_counter == main_spbuf->height) {
 			pixel_counter = 1;
 		} else {
 			pixel_counter++;
 		}
 
-		if (!update(main_sp_p)) {
-			return 1;
-		}
-		if (!render(main_window_p, main_sp_p)) {
+		if (!update(main_spbuf)) {
 			return 1;
 		}
 
+		if (!map_spbuf_to_buf(main_pixelbuf, main_spbuf)) {
+			return 1;
+		}
+		platif_render_surface(main_window_handle);
+
 	}
-	SDL_DestroyWindow(main_window_p->window);
-	SDL_Quit();
+	//SDL_DestroyWindow(main_window_p->window);
+	//SDL_Quit();
+	platif_quit();
 
 	return 0;
 }

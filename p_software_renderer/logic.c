@@ -1,5 +1,5 @@
-#include <SDL2/SDL.h>
 #include "../base/include/libbase.h"
+#include <stdint.h>
 #include "logic.h"
 #include "video.h"
 #include "objects.h"
@@ -36,10 +36,10 @@ static int *calculate_bit_digits(int number)
 }
 
 // this belongs into state?? right?
-int draw_number(struct scaled_pixelbuf *sp_p, int number, Uint32 x_offset, Uint32 y_offset)
+int draw_number(struct scaled_pixelbuf *sp_p, int number, uint32_t x_offset, uint32_t y_offset)
 {
-	Uint32 offset = (y_offset * sp_p->width) + x_offset;
-	Uint32 buffer_pos = offset;
+	uint32_t offset = (y_offset * sp_p->width) + x_offset;
+	uint32_t buffer_pos = offset;
 
 	int *digits = calculate_bit_digits(number);
 	if (!digits) {
