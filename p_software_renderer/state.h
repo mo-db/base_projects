@@ -1,18 +1,21 @@
 #ifndef STATE_H
 #define STATE_H
 
-#include <SDL2/SDL.h>
 #include "video.h"
 
+// tick duration (deltatime)
+static const double TARGET_FPS = 60.0;
+static const uint64_t TICK_DURATION_MS = (1000*(1.0/TARGET_FPS));
+
 /* static struct { */
-/* 	Uint64 accum;		// frametime accumulator */
-/* 	Uint64 tick_counter; */
+/* 	uint64_t accum;		// frametime accumulator */
+/* 	uint64_t tick_counter; */
 /* 	Uint32 per_frame_ticks; */
-/* 	Uint64 now;			// timer count of current frame */
-/* 	Uint64 last;		// timer count of last frame */
-/* 	Uint64 start;		// debug mesuring */
-/* 	Uint64 end;			// debug mesuring */
-/* 	Uint64 delta_ns;	// frame duration */
+/* 	uint64_t now;			// timer count of current frame */
+/* 	uint64_t last;		// timer count of last frame */
+/* 	uint64_t start;		// debug mesuring */
+/* 	uint64_t end;			// debug mesuring */
+/* 	uint64_t delta_ns;	// frame duration */
 /* 	double fps; */
 /* } state; */
 

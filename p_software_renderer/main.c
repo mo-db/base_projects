@@ -67,7 +67,6 @@ int main()
 	}
 	BASE_PROCESS_TRACE("Window created");
 
-
 	void *main_surface_handle = platif_get_window_surface(main_window_handle);
 	if (!main_surface_handle) {
 		BASE_PROCESS_ERROR("Couldn't get surface from window");
