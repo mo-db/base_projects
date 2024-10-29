@@ -136,3 +136,18 @@ int draw_rect(struct scaled_surface *s_surf,
 	}
 	return 1;
 }
+
+// so here maybe a struct element "rect" should be mallocd and filled and drawn?
+int new_draw_rect(struct scaled_surface *s_surf,
+					 int x, int y, int w, int h, uint32_t color)
+{
+	struct Point new_point;
+	for (new_point.y = y; new_point.y < (y + h); new_point.y++) {
+		for (new_point.x = x; new_point.x < (x + w); new_point.x++) {
+			if (!map_point_to_surface(s_surf, color, &new_point)) {
+				return 0;
+			}
+		}
+	}
+	return 1;
+}

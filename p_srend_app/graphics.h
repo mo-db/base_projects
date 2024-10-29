@@ -12,6 +12,8 @@ int draw_pixel_grid(struct scaled_surface *s_surf);
 int draw_point(struct scaled_surface *s_surf, struct Point p);
 
 int draw_rect(struct scaled_surface *s_surf, struct Rect *rect);
+int new_draw_rect(struct scaled_surface *s_surf,
+					 int x, int y, int w, int h, uint32_t color);
 
 int draw_line_simple(struct scaled_surface *s_surf, struct Point p1,
 					 struct Point p2);
