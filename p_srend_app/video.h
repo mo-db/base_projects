@@ -16,10 +16,10 @@ struct scaled_surface {
     uint32_t *pixels;
 };
 
-struct scaled_surface *create_scaled_pixelbuf(uint8_t scaling_factor, SDL_Surface *surf);
+struct scaled_surface *create_scaled_surface(uint8_t scaling_factor, SDL_Surface *surf);
 //int update_scaled_pixelbuf(struct pixelbuf *buf);
 
-int map_spbuf_to_buf(SDL_Surface *surf, struct scaled_surface *s_surf);
+int map_s_surf_to_surf(SDL_Surface *surf, struct scaled_surface *s_surf);
 
 //int destroy_struct_scaled_pixelbuf(struct scaled_pixelbuf *scaled_pb);
 //int destroy_struct_pixelbuf(struct pixelbuf *);

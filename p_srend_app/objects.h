@@ -24,4 +24,10 @@ struct Line {
 	struct Point p2;
 };
 
+struct Rect {
+	struct Point p;
+	int w;
+	int h;
+};
+
 #endif

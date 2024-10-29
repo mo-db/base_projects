@@ -5,6 +5,20 @@
 #include <stdlib.h>
 #include <math.h>
 
+static int map_point_to_surface(struct scaled_surface *s_surf,
+									 const uint32_t pixel_color, struct Point *p)
+{
+	int surf_position = (p->x - 1) + ((s_surf->height - p->y) * s_surf->width);
+	if (surf_position > s_surf->n_pixels) {
+		//TODO:maybe dont crash, just exit this function
+		BASE_PROCESS_ERROR("Surface buffer out of bounds!");
+		return 0;
+	} else {
+		//TODO: check if pixel_color format is correct?
+		s_surf->pixels[surf_position] = pixel_color;
+	}
+	return 1;
+}
 static int *calculate_bit_digits(int number)
 {
 	int n_digits = 0;
@@ -83,30 +97,42 @@ int draw_pixel_grid(struct scaled_surface *s_surf)
 	return 1;
 }
 
+int draw_point(struct scaled_surface *s_surf, struct Point p)
+{
+	if (!map_point_to_surface(s_surf, 0xFFFF0000, &p)) {
+		return 0;
+	}
+	return 1;
+}
+
 int draw_line_simple(struct scaled_surface *s_surf,
 					 struct Point p1, struct Point p2)
 {
 	float dx = p2.x - p1.x;
 	float dy = p2.y - p1.y;
 	float m = dy/dx;
-	int x, y;
-	int plot_value;
+	struct Point new_point;
 
 	// INFO: I will have to flip the pixelbuffer or better cast it into the form of a math coordsys
-	for (x = p1.x; x <= p2.x; x++) {
-		y = m * (x - p1.x) + p1.y;
-		plot_value = (x - 1) + ((s_surf->height - y) * s_surf->width);
-
-		//TODO: How do i do that???
-		//LOG_TRACE("plot_value: %d", 1);
-
-		if (plot_value > s_surf->n_pixels) {
-			BASE_PROCESS_ERROR("buffer overflow drawing line!");
+	for (new_point.x = p1.x; new_point.x <= p2.x; new_point.x++) {
+		new_point.y = m * (new_point.x - p1.x) + p1.y;
+		if (!map_point_to_surface(s_surf, 0xFFFF0000, &new_point)) {
 			return 0;
-		} else {
-			s_surf->pixels[plot_value] = 0xFFFF0000;
 		}
 	}
 	return 1;
 }
 
+int draw_rect(struct scaled_surface *s_surf,
+					 struct Rect *rect)
+{
+	struct Point new_point;
+	for (new_point.y = rect->p.y; new_point.y < (rect->h + rect->p.y); new_point.y++) {
+		for (new_point.x = rect->p.x; new_point.x < (rect->w + rect->p.x); new_point.x++) {
+			if (!map_point_to_surface(s_surf, 0xAFAF0000, &new_point)) {
+				return 0;
+			}
+		}
+	}
+	return 1;
+}

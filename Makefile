@@ -1,6 +1,6 @@
 ### Actual Project
-SRC_FILES := main video state logic objects platform_interface
-SRC_DIR := p_software_renderer
+SRC_FILES := main video graphics state objects
+SRC_DIR := p_srend_app
 
 SDL2_CFLAGS := $(shell sdl2-config --cflags)
 SDL2_LDFLAGS:= $(shell sdl2-config --static-libs)

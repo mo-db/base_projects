@@ -6,9 +6,14 @@
 #include "video.h"
 #include <stdint.h>
 
-int draw_number(struct scaled_surface *sp_p, int number, uint32_t x_offset,
+int draw_number(struct scaled_surface *s_surf, int number, uint32_t x_offset,
 				uint32_t y_offset);
 int draw_pixel_grid(struct scaled_surface *s_surf);
-int draw_line_simple(struct scaled_surface *sp_p, struct Point p1, struct Point p2);
+int draw_point(struct scaled_surface *s_surf, struct Point p);
+
+int draw_rect(struct scaled_surface *s_surf, struct Rect *rect);
+
+int draw_line_simple(struct scaled_surface *s_surf, struct Point p1,
+					 struct Point p2);
 
 #endif

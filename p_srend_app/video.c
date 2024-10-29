@@ -34,7 +34,7 @@ struct scaled_surface *create_scaled_surface(Uint8 scaling_factor,
     return s_surf;
 }
 
-int map_s_surf_to_buf(SDL_Surface *surf, struct scaled_surface *s_surf)
+int map_s_surf_to_surf(SDL_Surface *surf, struct scaled_surface *s_surf)
 {
 	// j = the scaled pixel width, l = how may small pixels in withd
 	// k = how many small pixels in height
