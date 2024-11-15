@@ -3,6 +3,12 @@
 float area_circle(float radius, float x_pos)
 {
 	if (radius > x_pos) {
+		// wenn hier nicht geprinted werden soll und es mehr
+		// als eine Art fehler moeglich waere muessen die return
+		// werte gegen verschiedene error faelle gecheckt werden
+		// ausserdem muesste ich hier auch checken wenn radius 0.0
+		// ist und dafuer entweder keine oder ne andere error variable
+		// definieren, muesste ich hier aber auch abchecken
 		fprintf(stderr, "circle not fully over x-axis\n");
 		return 0.0;
 	}
@@ -20,6 +26,13 @@ float area_under_circle(float radius, float x_pos)
 	float area_under_circle = 0;
 	area_under_circle = (radius * 2.0 * x_pos) - area_circle(radius, x_pos)/2.0;
 	return area_under_circle;
+}
+
+float area_any_circle(float radius, float x_pos)
+{
+	// hier muesste ich doch erstmal die schnittpunkte mit der
+	// x-achse ausrechnen um die aufgabe zu machen???
+	return 0.0;
 }
 
 float area_under_and_circle(float radius, float x_pos)
