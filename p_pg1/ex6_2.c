@@ -44,6 +44,7 @@ void read_bin_to_dec()
 			// print until c is no binary value
 			printf("%d, ", (c - '0'));
 		} else {
+            printf();
 			printf("\n%c is not binary!", c);
 			break;
 		}
