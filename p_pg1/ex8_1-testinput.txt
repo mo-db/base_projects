@@ -1,0 +1,117 @@
+1234asdf1234aaaaa12341234as
+#define __STDC_WANT_LIB_EXT1__ 1
+#include <stdio.h>
+#include <stddef.h>
+#include <locale.h>
+ 
+int main(void)
+{
+    int i, j;
+    float x, y;
+    char str1[10], str2[4];
+    wchar_t warr[2];
+    setlocale(LC_ALL, "en_US.utf8");
+ 
+    char input[] = "25 54.32E-1 Thompson 56789 0123 56ß水";
+    /* parse as follows:
+       %d: an integer
+       %f: a floating-point value
+       %9s: a string of at most 9 non-whitespace characters
+       %2d: two-digit integer (digits 5 and 6)
+       %f:  a floating-point value (digits 7, 8, 9)
+       %*d: an integer which isn't stored anywhere
+       ' ': all consecutive whitespace
+       %3[0-9]: a string of at most 3 decimal digits (digits 5 and 6)
+       %2lc: two wide characters, using multibyte to wide conversion  */
+    int ret = sscanf(input, "%d%f%9s%2d%f%*d %3[0-9]%2lc",
+                     &i, &x, str1, &j, &y, str2, warr);
+ 
+    printf("Converted %d fields:\n"
+           "i = %d\n"
+           "x = %f\n"
+           "str1 = %s\n"
+           "j = %d\n"
+           "y = %f\n"
+           "str2 = %s\n"
+           "warr[0] = U+%x\n"
+           "warr[1] = U+%x\n",
+           ret, i, x, str1, j, y, str2, warr[0], warr[1]);
+ 
+#ifdef __STDC_LIB_EXT1__
+    int n = sscanf_s(input, "%d%f%s", &i, &x, str1, (rsize_t)sizeof str1);
+    // writes 25 to i, 5.432 to x, the 9 bytes "Thompson\0" to str1, and 3 to n.
+#endif
+}
+
+Possible output:
+
+Converted 7 fields:
+i = 25
+x = 5.432000
+str1 = Thompson
+j = 56
+y = 789.000000
+str2 = 56
+warr[0] = U+df
+warr[1] = U+6c34
+
+References
+
+    C17 standard (ISO/IEC 9899:2018): 
+
+        7.21.6.2 The fscanf function (p: 231-236) 
+
+        7.21.6.4 The scanf function (p: 236-237) 
+
+        7.21.6.7 The sscanf function (p: 238-239) 
+
+        K.3.5.3.2 The fscanf_s function (p: 430-431) 
+
+        K.3.5.3.4 The scanf_s function (p: 432) 
+
+        K.3.5.3.7 The sscanf_s function (p: 433) 
+
+    C11 standard (ISO/IEC 9899:2011): 
+
+        7.21.6.2 The fscanf function (p: 317-324) 
+
+        7.21.6.4 The scanf function (p: 325) 
+
+        7.21.6.7 The sscanf function (p: 326) 
+
+        K.3.5.3.2 The fscanf_s function (p: 592-593) 
+
+        K.3.5.3.4 The scanf_s function (p: 594) 
+
+        K.3.5.3.7 The sscanf_s function (p: 596) 
+
+    C99 standard (ISO/IEC 9899:1999): 
+
+        7.19.6.2 The fscanf function (p: 282-289) 
+
+        7.19.6.4 The scanf function (p: 290) 
+
+        7.19.6.7 The sscanf function (p: 291) 
+
+    C89/C90 standard (ISO/IEC 9899:1990): 
+
+        4.9.6.2 The fscanf function 
+
+        4.9.6.4 The scanf function 
+
+        4.9.6.6 The sscanf function 
+
+See also
+vscanfvfscanfvsscanfvscanf_svfscanf_svsscanf_s
+(C99)(C99)(C99)(C11)(C11)(C11)
+	reads formatted input from stdin, a file stream or a buffer
+using variable argument list
+(function)
+fgets
+	gets a character string from a file stream
+(function)
+printffprintfsprintfsnprintfprintf_sfprintf_ssprintf_ssnprintf_s
+(C99)(C11)(C11)(C11)(C11)
+	prints formatted output to stdout, a file stream or a buffer
+(function)
+C++ documentation for scanf, fscanf, sscanf
