@@ -40,7 +40,9 @@ int map_s_surf_to_surf(SDL_Surface *surf, struct scaled_surface *s_surf)
 	int j = 0;
 	// the parantheses with init_width are for testing
 	for (int i = 0; i < s_surf->n_pixels; i++) {
+		// pixels downwards
 		for (int k = 0; k < (SCALING_FACTOR * surf->w); k += surf->w) {
+			// pixels to the right
 			for (int l = 0; l < SCALING_FACTOR; l++) {
 				((uint32_t*)(surf->pixels))[j+l+k] = s_surf->pixels[i];
 			}

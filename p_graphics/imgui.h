@@ -11,7 +11,7 @@ struct Gui_Element *new_gui_element();
 void imgui_begin();
 void imgui_end();
 int imgui_button(int x, int y, int id, struct scaled_surface *s_surf);
-int printinfo();
+void print_ginf();
 
 
 #endif

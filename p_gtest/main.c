@@ -1,8 +1,9 @@
-#include <SDL2/SDL.h>
 #include "../base/include/libbase.h"
 #include "video.h"
 #include "graphics.h"
+#include "imgui.h"
 #include "state.h"
+#include <SDL2/SDL.h>
 #include "stdio.h"
 #include "stdint.h"
 
@@ -20,10 +21,6 @@ int main(int argc, char** argv)
 		BASE_PROCESS_ERROR("Error SDL init");
 		return 0;
 	}
-
-	// init state
-	struct State state = {0};
-	struct Imgui imgui = {0};
 
 	SDL_Window* window = SDL_CreateWindow("Window", SDL_WINDOWPOS_CENTERED,
 								SDL_WINDOWPOS_CENTERED, INIT_WIDTH,
@@ -44,7 +41,6 @@ int main(int argc, char** argv)
 		BASE_PROCESS_ERROR("create_scaled_pixelbuf() null return!");
 		return 1;
 	}
-
 	
 	SDL_Event event;
 	uint8_t keep_going = 1;
@@ -59,48 +55,69 @@ int main(int argc, char** argv)
 						keep_going = 0;
 					}
 				case SDL_MOUSEMOTION:
-					state.mouse_x = event.motion.x;
-					state.mouse_y = event.motion.y;
-					state.scaled_mouse_x = state.mouse_x / SCALING_FACTOR;
-					state.scaled_mouse_y = state.mouse_y / SCALING_FACTOR;
+					state.mouse.x = event.motion.x;
+					state.mouse.y = event.motion.y;
 					break;
 				case SDL_MOUSEBUTTONDOWN:
-					state.mouse_down = 1;
+					state.mouse.down = 1;
 					break;
 				case SDL_MOUSEBUTTONUP:
-					state.mouse_down = 0;
+					state.mouse.down = 0;
 					break;
 			}
 		}
+
+		if (!draw_pixel_grid(s_surf)) {
+			return 0;
+		}
+
+		// draw white again
+		for (int i = 0; i < s_surf->n_pixels; i++) {
+			s_surf->pixels[i] = 0xFFFFFFFF;
+		}
 		
-		//INFO: unstable
+		struct Point test_point;
+		test_point.x = s_surf->width/2;
+		test_point.y = s_surf->height/2;
+		draw_point(s_surf, test_point);
+
+		struct Rect test_rect;
+		test_rect.p.x = 5;
+		test_rect.p.y = 7;
+		test_rect.w = 20;
+		test_rect.h = 15;
+		draw_rect(s_surf, &test_rect);
+
+		/*
+		struct Point p1;
+		p1.x = 1;
+		p1.y = 1;
+		struct Point p2;
+		p2.x = s_surf->width;
+		//p2.y = pixel_counter;
+		p2.y = 30;
+
+		if (!draw_line_simple(s_surf, p1, p2)) {
+			return 0;
+		}
+		*/
+
 		imgui_begin();
+		if (!imgui_button(30, 20, 0, s_surf)) {
+			return 0;
+			printf("error\n");
+		}
+		print_ginf();
+		imgui_end();
 
-		/* if (!update_graphics(s_surf, state)) */
-		if (!update_graphics(s_surf))
-			return 1;
-		/* if (!update_audio(NULL)) */
-			/* return 1; */
-
-
-		//INFO: unstable
-		imgui_button(10, 30, ++imgui.id, s_surf);
-		printf("mouse pos: %d, %d\n", state.mouse_x, state.mouse_y);
-		printf("imgui highlight: %d\n", imgui.highlight);
-		printf("imgui active: %d\n", imgui.active);
-		printf("imgui id: %d\n", imgui.id);
+		/* seperate */
 
 		if (!map_s_surf_to_surf(surface, s_surf))
 			return 1;
 		SDL_UpdateWindowSurface(window);
-
-		//INFO: unstable
-		imgui_end();
 		SDL_Delay(10);
 	}
-
 	SDL_DestroyWindow(window);
 	SDL_Quit();
-
-	return 42;
+	return 0;
 }

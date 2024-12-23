@@ -1,7 +1,7 @@
 #include "../base/include/libbase.h"
 #include "video.h"
-#include "objects.h"
 #include "graphics.h"
+#include "objects.h"
 #include <stdint.h>
 #include <stdlib.h>
 #include <math.h>

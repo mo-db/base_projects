@@ -2,13 +2,11 @@
 #include "objects.h"
 #include "video.h"
 #include "graphics.h"
-#include <stdint.h>
+#include "imgui.h"
 #include "state.h"
-/* #include "gui.h" */
+#include <stdint.h>
 
-
-// GUI stuff, move to seperate file later
-struct Imgui {
+static struct Imgui {
 	int active;
 	int highlight;
 	int id;
@@ -16,9 +14,6 @@ struct Imgui {
 
 void imgui_begin()
 {
-	/* int mouse_x = x; */
-	/* int mouse_y = y; */
-	/* int mouse_down = down; */
 	imgui.highlight = 0;
 	imgui.id = 0;
 }
@@ -27,7 +22,7 @@ void imgui_begin()
 void imgui_end()
 {
 	/* if button was not down in that frame reset imgui_active */
-	if (!state.mouse_down) {
+	if (!state.mouse.down) {
 		imgui.active = 0;
 	} else if (!imgui.active) { // mouse is down here
 		/* deactivate while mouse down but not inside element */
@@ -41,10 +36,10 @@ int imgui_button(int x, int y, int id, struct scaled_surface *s_surf)
 	const int H = 30;
 
 	//FIX: one s_pixel off
-	if (state.mouse_x >= x && (s_surf->height - state.scaled_mouse_y) >= y &&
-		state.mouse_x <= (x + W) && (s_surf->height - state.scaled_mouse_y) <= (y + W)) {
+	if (state.mouse.x >= x && (s_surf->height - (state.mouse.y / SCALING_FACTOR)) >= y &&
+		state.mouse.x <= (x + W) && (s_surf->height - (state.mouse.y / SCALING_FACTOR)) <= (y + W)) {
 		imgui.highlight = id;
-		if (imgui.active == 0 && state.mouse_down) {
+		if (imgui.active == 0 && state.mouse.down) {
 			imgui.active = id;
 		}
 	}
@@ -79,34 +74,16 @@ int imgui_button(int x, int y, int id, struct scaled_surface *s_surf)
 	if (!new_draw_rect(s_surf, x + click_offset_x, y + click_offset_y, W, H, bg_color))
 		return -1;
 
-	if (imgui.active == id && imgui.highlight == id && !state.mouse_down) {
+	if (imgui.active == id && imgui.highlight == id && !state.mouse.down) {
 		return 1;
 	} else {
 		return 0;
 	}
 }
 
-
-
-/* enum Gui_Element_Type { */
-/* 	BUTTON, */
-/* 	SLIDER, */
-/* 	FIELD */
-/* }; */
-/**/
-/* struct Gui_Element { */
-/* 	int w; */
-/* 	int h; */
-/* }; */
-/**/
-/* struct Button { */
-/* 	struct Gui_Element; */
-/* 	uint8_t highlighted; */
-/* 	uint8_t active; */
-/* }; */
-/**/
-/* struct Gui_Element *new_gui_element() */
-/* { */
-/* 	return NULL; */
-/* } */
-
+void print_ginf() {
+	printf("mouse pos: %d, %d\n", state.mouse.x, state.mouse.y);
+	printf("imgui highlight: %d\n", imgui.highlight);
+	printf("imgui active: %d\n", imgui.active);
+	printf("imgui id: %d\n", imgui.id);
+}
