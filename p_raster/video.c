@@ -63,10 +63,12 @@ int pixsurf_to_ppm(struct Pixsurf* pixsurf, FILE* fp, uint32_t pixel)
 
 	// convert uint32_t rgba pixelformat to r, g, b respectively
 	uint8_t red, green, blue;
+	uint32_t pixel_color;
 	for (int i = 0; i < pixsurf->n_pixels; i++) {
-		red = (pixel & 0xFF000000) >> 24;
-		green = (pixel & 0x00FF0000) >> 16;
-		blue = (pixel & 0x0000FF00) >> 8;
+		pixel_color = pixsurf->pixels[i];
+		red = (pixel_color & 0xFF000000) >> 24;
+		green = (pixel_color & 0x00FF0000) >> 16;
+		blue = (pixel_color & 0x0000FF00) >> 8;
 		fprintf(fp, "%d %d %d\n", red, green, blue);
 	}
 	return 1;

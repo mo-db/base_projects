@@ -2,8 +2,11 @@
 SRC_FILES := main video
 SRC_DIR := p_raster
 
-SDL2_CFLAGS := $(shell sdl2-config --cflags)
-SDL2_LDFLAGS:= $(shell sdl2-config --static-libs)
+# SDL2_CFLAGS := $(shell sdl2-config --cflags)
+# SDL2_LDFLAGS:= $(shell sdl2-config --static-libs)
+
+SDL2_CFLAGS := -I/opt/homebrew/Cellar/sdl2/2.30.10/include/SDL2 -I/opt/homebrew/Cellar/sdl2_image/2.8.3/include/SDL2
+SDL2_LDFLAGS:= -L/opt/homebrew/Cellar/sdl2/2.30.10/lib -lsdl2 -L/opt/homebrew/Cellar/sdl2_image/2.8.3/lib -lsdl2_image 
 
 # -g = include debug info, -O0/1/2 = optimization
 # -MMD -MP to create .d files for header deps

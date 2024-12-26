@@ -3,29 +3,42 @@
 #include <string.h>
 
 #define INPUT_MAX 1000
+#define WORD_MAX 100
 
 int main(int argc, char* argv[])
 {
-	int input_stream[INPUT_MAX];
+	char input_buf[INPUT_MAX];
+	char word_buf[WORD_MAX];
+	// forbidden word, should be an ary if serious
+	char* forb = "bla";
 
 	if (argc > 1) {
-		int input_stream_counter = 0;
+		int char_counter = 0;
 		int c;
 		for (int i = 1; i < argc; i++) {
-			while ((c = *(argv[i]++)) != '\n') {
-				input_stream[input_stream_counter++] = c;
-			}
-		}
-	}
 
-	/* char test_str[] = {'\xe4','\xbd','\xa0','\xe5','\xa5','\xbd','\0'}; */
-	/* for (int i = 0; i < 20; i++) { */
-	/* 	printf("%i ", *(*argv+i)); */
-	/* } */
-	/* printf("\n"); */
-	/* for (int i = 0; i < 20 && test_str[i] != '\0'; i ++) { */
-	/* 	printf("%i ", test_str[i]); */
-	/* } */
+			// write each arg into a word buffer
+	   		int word_counter = 0;
+			while ((c = *(argv[i]++)) != '\0') {
+				word_buf[word_counter++] = c;
+			}
+			word_buf[word_counter] = '\0';
+
+			// compare the word in buffer with forbidden word
+			// if equal, exit. Else write the word in the input buffer.
+			if (strcmp(word_buf, forb) == 0) {
+				printf("%s found in string!\n", forb);
+				return 1;
+			} else {
+	  			for (int j = 0; word_buf[j] != '\0'; j++) {
+	  				input_buf[char_counter++] = word_buf[j];	
+	  			}
+	  		}
+			input_buf[char_counter++] = ' ';
+		}
+		input_buf[--char_counter] = '\0';
+	}
+	printf("Moin, %s.\n", input_buf);
 
 	return 0;
 }
