@@ -6,9 +6,6 @@
 
 /* additional includes */
 #include "video.h"
-#include <math.h>
-
-// create_pixsurf, adopt_pixsurf?
 
 struct Pixsurf* create_new_pixsurf(int w, int h, uint32_t* pixels)
 {
@@ -38,7 +35,7 @@ struct Pixsurf* create_new_pixsurf(int w, int h, uint32_t* pixels)
 	return pixsurf;
 }
 
-int draw_pixel_grid(struct Pixsurf* pixsurf)
+int draw_grid(struct Pixsurf* pixsurf)
 {
 	// draw pixel grid for testing
 	for (int j = 0; j < pixsurf->h; j += 2) {
@@ -54,22 +51,35 @@ int draw_pixel_grid(struct Pixsurf* pixsurf)
 	return 1;
 }
 
-int pixsurf_to_ppm(struct Pixsurf* pixsurf, FILE* fp, uint32_t pixel)
+int pixsurf_to_ppm(struct Pixsurf* pixsurf, char* path)
 {
+	FILE* image = fopen(path, "w");
+	assert(image);
 	// create the ppm header
-	fprintf(fp, "P3\n");
-	fprintf(fp, "%d %d\n", pixsurf->w, pixsurf->h);
-	fprintf(fp, "255\n");
+	fprintf(image, "P3\n");
+	fprintf(image, "%d %d\n", pixsurf->w, pixsurf->h);
+	fprintf(image, "255\n");
 
 	// convert uint32_t rgba pixelformat to r, g, b respectively
 	uint8_t red, green, blue;
 	uint32_t pixel_color;
-	for (int i = 0; i < pixsurf->n_pixels; i++) {
+	/* for (int i = 0; i < pixsurf->n_pixels; i++) { */
+	for (int i = 0; i < 20; i++) {
 		pixel_color = pixsurf->pixels[i];
 		red = (pixel_color & 0xFF000000) >> 24;
 		green = (pixel_color & 0x00FF0000) >> 16;
 		blue = (pixel_color & 0x0000FF00) >> 8;
-		fprintf(fp, "%d %d %d\n", red, green, blue);
+		fprintf(image, "%d %d %d\n", red, green, blue);
 	}
+	fclose(image);
+	return 1;
+}
+
+int ppm_to_pixsurf(char* path)
+{
+	FILE* image = fopen(path, "r");
+	assert(image);
+
+	fclose(image);
 	return 1;
 }
