@@ -17,8 +17,13 @@ struct Pixsurf {
 
 // set pixels to NULL if a new buffer should be allocated, free as whole
 struct Pixsurf* create_new_pixsurf(int w, int h, uint32_t* pixels);
+
+// for testing purpose
 int draw_grid(struct Pixsurf* pixsurf);
-int pixsurf_to_ppm(struct Pixsurf* pixsurf, FILE* fp);
-struct Pixsurf* ppm_to_pixsurf(FILE* fp);
+
+// netpbm
+int pixsurf_to_p3(struct Pixsurf* pixsurf, char* path);
+int pixsurf_to_p6(struct Pixsurf* pixsurf, char* path);
+struct Pixsurf* p6_to_pixsurf( char* path);
 
 #endif
