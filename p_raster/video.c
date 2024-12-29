@@ -70,7 +70,29 @@ static void rgb_matrix_to_rgba32(uint32_t* pixcolor, uint8_t* rgb_matrix)
 }
 
 static void rgb_matrix_to_yiq_matrix(uint8_t* rgb_matrix, uint8_t* yiq_matrix)
-{}
+{
+	float bp[] = {
+		0.299, 0.587, 0.114, 
+		0.5959, -0.2746, -0.3213,
+		0.2115, -0.5227, -0.3112
+	};
+	yiq_matrix[0] = bp[0]*rgb_matrix[0] + bp[1]*rgb_matrix[1] + bp[2]*rgb_matrix[2];
+	yiq_matrix[1] = bp[3]*rgb_matrix[0] + bp[4]*rgb_matrix[1] + bp[5]*rgb_matrix[2];
+	yiq_matrix[2] = bp[6]*rgb_matrix[0] + bp[7]*rgb_matrix[1] + bp[8]*rgb_matrix[2];
+}
+
+static void yiq_matrix_to_rgb_matrix(uint8_t* rgb_matrix, uint8_t* yiq_matrix)
+{
+	float bp[] = {
+		1, 0.956, 0.619,
+		1, -0.272, -0.647,
+		1, -1.106, 1.703
+	};
+	rgb_matrix[0] = bp[0]*yiq_matrix[0] + bp[1]*yiq_matrix[1] + bp[2]*yiq_matrix[2];
+	rgb_matrix[1] = bp[3]*yiq_matrix[0] + bp[4]*yiq_matrix[1] + bp[5]*yiq_matrix[2];
+	rgb_matrix[2] = bp[6]*yiq_matrix[0] + bp[7]*yiq_matrix[1] + bp[8]*yiq_matrix[2];
+
+}
 
 int pixsurf_to_p3(struct Pixsurf* pixsurf, char* path)
 {
@@ -98,9 +120,13 @@ int pixsurf_to_p6(struct Pixsurf* pixsurf, char* path)
 	// ppm P6 header
 	fprintf(image, "P6\n%d %d\n255\n", pixsurf->w, pixsurf->h);
 
+	uint8_t test_rgb_matrix[3];
 	uint8_t rgb_matrix[3];
+	uint8_t yiq_matrix[3];
 	for (int i = 0; i < pixsurf->n_pixels; i++) {
-		rgba32_to_rgb_matrix(pixsurf->pixels[i], rgb_matrix);
+		rgba32_to_rgb_matrix(pixsurf->pixels[i], test_rgb_matrix);
+		rgb_matrix_to_yiq_matrix(test_rgb_matrix, yiq_matrix);
+		yiq_matrix_to_rgb_matrix(rgb_matrix, yiq_matrix);
 		fwrite(rgb_matrix, sizeof *rgb_matrix, 3, image); //TODO: study sizeof first ary element
 	}
 

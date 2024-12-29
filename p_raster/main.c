@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
 	// this one should return pixsurf of correct size
 	struct Pixsurf* pixsurf = p6_to_pixsurf(image_in);
 	if (!pixsurf) {return 1;}
-	pixsurf_to_p3(pixsurf, image_p3);
+	/* pixsurf_to_p3(pixsurf, image_p3); */
 	pixsurf_to_p6(pixsurf, image_p6);
 
 	free(pixsurf);
