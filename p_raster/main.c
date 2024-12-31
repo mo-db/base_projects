@@ -17,8 +17,8 @@ int draw(Pixsurf* pixsurf)
 	/* 	return 0; */
 	/* } */
 
-	P2 p2 = {5, 20};
-	if (!draw_rect(pixsurf, &p2, 50, 250)) {
+	P2 p2 = {128, 256};
+	if (!draw_rect(pixsurf, &p2, pixsurf->w/8, pixsurf->h/4)) {
 		return 0;
 	}
 	return 1;

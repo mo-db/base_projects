@@ -41,7 +41,11 @@ static int fill_segmetn(Pixsurf* pixsurf, uint32_t rgba_value, P2* p, int len)
 {
 	/* int index = (p->x - 1) + ((pixsurf->h - p->y) * pixsurf->w); */
 
-	int index = (p->x - 1) + (p->y * pixsurf->w);
+	// origin up_left
+	int index = p->x + (p->y * pixsurf->w);
+
+	// origin middle
+	/* int index = (p->x + pixsurf->w/2) + ((p->y * pixsurf->w) + pixsurf->w * pixsurf->h/2); */
 	if ((index + len) > pixsurf->n_pixels) {
 		printf("err: out of bounds!\n");
 		return 0;
@@ -55,7 +59,10 @@ static int fill_segmetn(Pixsurf* pixsurf, uint32_t rgba_value, P2* p, int len)
 
 static int fill_point(Pixsurf* pixsurf, uint32_t rgba_value, P2* p)
 {
-	int index = (p->x - 1) + ((pixsurf->h - p->y) * pixsurf->w);
+	/* int index = p->x + ((p->y * pixsurf->w) - (pixsurf->n_pixels - pixsurf->w)); */
+	int index = p->x + (p->y * pixsurf->w);
+
+	/* int index = (p->x + pixsurf->w/2) + ((p->y * pixsurf->w) + pixsurf->w * pixsurf->h/2); */
 	if (index > pixsurf->n_pixels) {
 		printf("err: out of bounds!\n");
 		return 0;
@@ -124,20 +131,45 @@ static void yiq_matrix_to_rgb_matrix(uint8_t* rgb_matrix, uint8_t* yiq_matrix)
 
 }
 
+static int matrix_transform(P2* p, P2* new_p, Matrix_2x2* t_matrix) 
+{
+	new_p->x = (t_matrix->m11 * p->x) + (t_matrix->m12 * p->y);
+	new_p->y = (t_matrix->m21 * p->x) + (t_matrix->m22 * p->y);
+	return 1;
+}
+
 int draw_rect(Pixsurf* pixsurf, P2* p, int w, int h)
 {
 	uint32_t rgba_val;
 	P2 new_p;
-	int count = 0;
-
+	uint8_t count = 0;
+	/* uint8_t count_val = ((255 / h) < 1) ?  1 : 255 / h; */
+	uint8_t count_val = 19;
+	printf("count_val %d\n", count_val);
 	RGB rgb_matrix;
+	
+	Matrix_2x2 sheer = {1.0, 2.0, 0.0, 1.0};
+	printf("m%d: %f\n", 11, sheer.m11);
+	printf("m%d: %f\n", 12, sheer.m12);
+	printf("m%d: %f\n", 21, sheer.m21);
+	printf("m%d: %f\n", 22, sheer.m22);
+	for (int i = 0; i < 4; i++) {
+		printf("matrix: %f\n", sheer.data[i]);
+	}
+	P2 new_p2;
 
 	for (new_p.y = p->y; new_p.y < (p->y + h); new_p.y++) {
- 		rgb_matrix = (RGB){count % 255, count % 5, count % 255};
-		/* rgb_matrix_to_rgba32(&rgba_val, &(RGB){count % 255, count % 255, count % 255}); */
-		rgb_matrix_to_rgba32(&rgba_val, &rgb_matrix);
-		if(!fill_segmetn(pixsurf, rgba_val, &new_p, w)) { return 0; }
-		count++;
+		for (new_p.x = p->x; new_p.x < (p->x + w); new_p.x++) {
+			rgb_matrix = (RGB){0, 255 - count, 0};
+			/* rgb_matrix_to_rgba32(&rgba_val, &(RGB){count % 255, count % 255, count % 255}); */
+			/* printf("count %d\n", count); */
+			rgb_matrix_to_rgba32(&rgba_val, &rgb_matrix);
+			/* if(!fill_segmetn(pixsurf, rgba_val, &new_p, w)) { return 0; } */
+			matrix_transform(&new_p, &new_p2, &sheer);
+			if(!fill_point(pixsurf, rgba_val, &new_p2)) { return 0; }
+			count += count_val;
+		}
+
 	}
 	return 1;
 }

@@ -8,6 +8,7 @@
 #define INIT_HEIGHT 720
 #define SCALING_FACTOR 4
 
+// should be double 0 - 1;
 typedef struct {
     int w;
     int h;
