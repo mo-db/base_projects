@@ -9,15 +9,15 @@
 #include "ctype.h"
 #include "string.h"
 
-struct Pixsurf* create_new_pixsurf(int w, int h, uint32_t* pixels)
+Pixsurf* create_new_pixsurf(int w, int h, uint32_t* pixels)
 {
-	struct Pixsurf* pixsurf = NULL;
+	Pixsurf* pixsurf = NULL;
 
  	// if no buffer provided, allocate space for it
 	if (!pixels) {
-		pixsurf = malloc(sizeof(struct Pixsurf) + (w * h * sizeof(uint32_t)));
+		pixsurf = malloc(sizeof(Pixsurf) + (w * h * sizeof(uint32_t)));
 	} else {
-		pixsurf = malloc(sizeof(struct Pixsurf));
+		pixsurf = malloc(sizeof(Pixsurf));
 	}
 	if (!pixsurf) {
 		fprintf(stderr, "malloc error\n");
@@ -37,7 +37,35 @@ struct Pixsurf* create_new_pixsurf(int w, int h, uint32_t* pixels)
 	return pixsurf;
 }
 
-int draw_grid(struct Pixsurf* pixsurf)
+static int fill_segmetn(Pixsurf* pixsurf, uint32_t rgba_value, P2* p, int len)
+{
+	/* int index = (p->x - 1) + ((pixsurf->h - p->y) * pixsurf->w); */
+
+	int index = (p->x - 1) + (p->y * pixsurf->w);
+	if ((index + len) > pixsurf->n_pixels) {
+		printf("err: out of bounds!\n");
+		return 0;
+	} else {
+		for (int i = 0; i < len; i++) {
+			pixsurf->pixels[index + i] = rgba_value;
+		}
+	}
+	return 1;
+}
+
+static int fill_point(Pixsurf* pixsurf, uint32_t rgba_value, P2* p)
+{
+	int index = (p->x - 1) + ((pixsurf->h - p->y) * pixsurf->w);
+	if (index > pixsurf->n_pixels) {
+		printf("err: out of bounds!\n");
+		return 0;
+	} else {
+		pixsurf->pixels[index] = rgba_value;
+	}
+	return 1;
+}
+
+int draw_grid(Pixsurf* pixsurf)
 {
 	// draw pixel grid for testing
 	for (int j = 0; j < pixsurf->h; j += 2) {
@@ -55,20 +83,21 @@ int draw_grid(struct Pixsurf* pixsurf)
 
 // convert 32bit rgba value into 3x1bit rgb matrix
 // TODO: do I need error handling in functions like this one?
-static void rgba32_to_rgb_matrix(uint32_t pixcolor, uint8_t* rgb_matrix)
+static void rgba32_to_rgb_matrix(uint32_t pixcolor, RGB* rgb_matrix)
 {
-	rgb_matrix[0] = (pixcolor & 0xFF000000) >> 24; 	// red
-	rgb_matrix[1] = (pixcolor & 0x00FF0000) >> 16; 	// green
-	rgb_matrix[2] = (pixcolor & 0x0000FF00) >> 8; 	// blue
+	rgb_matrix->r = (pixcolor & 0xFF000000) >> 24; 	// red
+	rgb_matrix->g = (pixcolor & 0x00FF0000) >> 16; 	// green
+	rgb_matrix->b = (pixcolor & 0x0000FF00) >> 8; 	// blue
 }
 
-static void rgb_matrix_to_rgba32(uint32_t* pixcolor, uint8_t* rgb_matrix)
+static void rgb_matrix_to_rgba32(uint32_t* pixcolor, RGB* rgb_matrix)
 {
-	*pixcolor = ((rgb_matrix[0] << 24) & 0xFF000000)
-		+ ((rgb_matrix[1] << 16) & 0x00FF0000)
-		+ ((rgb_matrix[2] << 8) & 0x0000FF00);
+	*pixcolor = ((rgb_matrix->r << 24) & 0xFF000000)
+		+ ((rgb_matrix->g << 16) & 0x00FF0000)
+		+ ((rgb_matrix->b << 8) & 0x0000FF00);
 }
 
+// TODO: fix precision issue
 static void rgb_matrix_to_yiq_matrix(uint8_t* rgb_matrix, uint8_t* yiq_matrix)
 {
 	float bp[] = {
@@ -81,6 +110,7 @@ static void rgb_matrix_to_yiq_matrix(uint8_t* rgb_matrix, uint8_t* yiq_matrix)
 	yiq_matrix[2] = bp[6]*rgb_matrix[0] + bp[7]*rgb_matrix[1] + bp[8]*rgb_matrix[2];
 }
 
+// TODO: fix precision issue
 static void yiq_matrix_to_rgb_matrix(uint8_t* rgb_matrix, uint8_t* yiq_matrix)
 {
 	float bp[] = {
@@ -94,7 +124,26 @@ static void yiq_matrix_to_rgb_matrix(uint8_t* rgb_matrix, uint8_t* yiq_matrix)
 
 }
 
-int pixsurf_to_p3(struct Pixsurf* pixsurf, char* path)
+int draw_rect(Pixsurf* pixsurf, P2* p, int w, int h)
+{
+	uint32_t rgba_val;
+	P2 new_p;
+	int count = 0;
+
+	RGB rgb_matrix;
+
+	for (new_p.y = p->y; new_p.y < (p->y + h); new_p.y++) {
+ 		rgb_matrix = (RGB){count % 255, count % 5, count % 255};
+		/* rgb_matrix_to_rgba32(&rgba_val, &(RGB){count % 255, count % 255, count % 255}); */
+		rgb_matrix_to_rgba32(&rgba_val, &rgb_matrix);
+		if(!fill_segmetn(pixsurf, rgba_val, &new_p, w)) { return 0; }
+		count++;
+	}
+	return 1;
+}
+
+
+int pixsurf_to_p3(Pixsurf* pixsurf, char* path)
 {
 	FILE* image = fopen(path, "w");
 	assert(image);
@@ -102,17 +151,17 @@ int pixsurf_to_p3(struct Pixsurf* pixsurf, char* path)
 	// ppm P3 header
 	fprintf(image, "P3\n%d %d\n255\n", pixsurf->w, pixsurf->h);
 
-	uint8_t rgb_matrix[3];
+	RGB rgb_matrix;
 	for (int i = 0; i < pixsurf->n_pixels; i++) {
-		rgba32_to_rgb_matrix(pixsurf->pixels[i], rgb_matrix);
-		fprintf(image, "%d %d %d\n", rgb_matrix[0], rgb_matrix[1], rgb_matrix[2]);
+		rgba32_to_rgb_matrix(pixsurf->pixels[i], &rgb_matrix);
+		fprintf(image, "%d %d %d\n", rgb_matrix.r, rgb_matrix.g, rgb_matrix.b);
 	}
 
 	fclose(image);
 	return 1;
 }
 
-int pixsurf_to_p6(struct Pixsurf* pixsurf, char* path)
+int pixsurf_to_p6(Pixsurf* pixsurf, char* path)
 {
 	FILE* image = fopen(path, "wb");
 	assert(image);
@@ -120,21 +169,17 @@ int pixsurf_to_p6(struct Pixsurf* pixsurf, char* path)
 	// ppm P6 header
 	fprintf(image, "P6\n%d %d\n255\n", pixsurf->w, pixsurf->h);
 
-	uint8_t test_rgb_matrix[3];
-	uint8_t rgb_matrix[3];
-	uint8_t yiq_matrix[3];
+	RGB color;
 	for (int i = 0; i < pixsurf->n_pixels; i++) {
-		rgba32_to_rgb_matrix(pixsurf->pixels[i], test_rgb_matrix);
-		rgb_matrix_to_yiq_matrix(test_rgb_matrix, yiq_matrix);
-		yiq_matrix_to_rgb_matrix(rgb_matrix, yiq_matrix);
-		fwrite(rgb_matrix, sizeof *rgb_matrix, 3, image); //TODO: study sizeof first ary element
+		rgba32_to_rgb_matrix(pixsurf->pixels[i], &color);
+		fwrite(&color, sizeof color.r, 3, image);
 	}
 
 	fclose(image);
 	return 1;
 }
 
-struct Pixsurf* p6_to_pixsurf(char* path)
+Pixsurf* p6_to_pixsurf(char* path)
 {
 	FILE* image = fopen(path, "rb");
 	assert(image);
@@ -185,14 +230,14 @@ struct Pixsurf* p6_to_pixsurf(char* path)
 	}
 	
 	// allocate new pixsurf struct and pixel buffer
-	struct Pixsurf* pixsurf = create_new_pixsurf(w, h, NULL);
+	Pixsurf* pixsurf = create_new_pixsurf(w, h, NULL);
 	if (!pixsurf) {return NULL;}
 
 	// fill pixsurf, TODO: to many fread? Can i first save to buffer or something?
-	uint8_t rgb_matrix[3];
+	RGB color;
 	for (int i = 0; i < pixsurf->n_pixels; i++) {
-		fread(rgb_matrix, sizeof *rgb_matrix, 3, image); //TODO: study sizeof first ary element
-		rgb_matrix_to_rgba32(pixsurf->pixels+i, rgb_matrix);
+		fread(&color, sizeof color.r, 3, image);  // sizeof element, prevent padding
+		rgb_matrix_to_rgba32(pixsurf->pixels+i, &color);
 	}
 
 	fclose(image);

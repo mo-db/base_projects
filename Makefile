@@ -10,8 +10,8 @@ SDL2_LDFLAGS:= -L/opt/homebrew/Cellar/sdl2/2.30.10/lib -lsdl2 -L/opt/homebrew/Ce
 
 # -g = include debug info, -O0/1/2 = optimization
 # -MMD -MP to create .d files for header deps
-CFLAGS := -Wall -g -MMD -MP $(SDL2_CFLAGS)
-LDFLAGS := -L./base/lib -lbase $(SDL2_LDFLAGS)
+CFLAGS := -Wall -g -MMD -MP
+LDFLAGS := -L./base/lib -lbase
 
 OBJ_DIR := obj
 BIN_DIR := bin
