@@ -64,8 +64,8 @@ static int fill_point(Pixsurf* pixsurf, uint32_t rgba_value, P2* p)
 
 	/* int index = (p->x + pixsurf->w/2) + ((p->y * pixsurf->w) + pixsurf->w * pixsurf->h/2); */
 	if (index > pixsurf->n_pixels) {
-		printf("err: out of bounds!\n");
-		return 0;
+		/* printf("err: out of bounds!\n"); */
+		return 1;
 	} else {
 		pixsurf->pixels[index] = rgba_value;
 	}
@@ -148,7 +148,7 @@ int draw_rect(Pixsurf* pixsurf, P2* p, int w, int h)
 	printf("count_val %d\n", count_val);
 	RGB rgb_matrix;
 	
-	Matrix_2x2 sheer = {1.0, 2.0, 0.0, 1.0};
+	Matrix_2x2 sheer = {1.0, 2.0, 0.0, 2.0};
 	printf("m%d: %f\n", 11, sheer.m11);
 	printf("m%d: %f\n", 12, sheer.m12);
 	printf("m%d: %f\n", 21, sheer.m21);
