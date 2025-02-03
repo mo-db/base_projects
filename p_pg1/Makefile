@@ -1,5 +1,5 @@
 ### Blueprint Makefile ###
-SRC_FILES := ex_09-1
+SRC_FILES := pc_001
 
 SRC_DIR := src
 OBJ_DIR := obj
@@ -7,11 +7,11 @@ BIN_DIR := bin
 
 CC := gcc-14
 CFLAGS := -Wall -g -MMD -MP
-LDFLAGS := 
+LDFLAGS :=
 
 EXE := $(BIN_DIR)/a.out
 SRC := $(wildcard $(SRC_DIR)/*.c)
-OBJ := $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+OBJ := $(addprefix $(OBJ_DIR)/, $(addsuffix .o, $(SRC_FILES)))
 
 
 

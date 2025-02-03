@@ -1,0 +1,4 @@
+Kai 10 manpages , c++ , rants , kung fu , vim
+Jonas 20 neovim , c++ , computergrafik , zeltlager
+Michi 25 c++ , rants , computergrafik
+Hans 30 mathe , rants , bahnfahren
