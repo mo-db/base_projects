@@ -2,7 +2,11 @@
 triple:          'arm64-apple-darwin'
 binary-path:     'bin/a.out'
 relocations:
-  - { offset: 0x19, size: 0x8, addend: 0x0, symName: _get_lines_n, symObjAddr: 0x0, symBinAddr: 0x100003E00, symSize: 0x4C }
-  - { offset: 0x2AA, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x4C, symBinAddr: 0x100003E4C, symSize: 0xA8 }
-  - { offset: 0x305, size: 0x8, addend: 0x0, symName: _get_lines_n, symObjAddr: 0x0, symBinAddr: 0x100003E00, symSize: 0x4C }
+  - { offset: 0x19, size: 0x8, addend: 0x0, symName: _get_lines_n, symObjAddr: 0x0, symBinAddr: 0x1000038D0, symSize: 0x54 }
+  - { offset: 0x326, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x47C, symBinAddr: 0x100003D4C, symSize: 0x40 }
+  - { offset: 0x372, size: 0x8, addend: 0x0, symName: _read_file, symObjAddr: 0x16C, symBinAddr: 0x100003A3C, symSize: 0x310 }
+  - { offset: 0x471, size: 0x8, addend: 0x0, symName: _read_line, symObjAddr: 0xB0, symBinAddr: 0x100003980, symSize: 0xBC }
+  - { offset: 0x4BD, size: 0x8, addend: 0x0, symName: _hobby_free, symObjAddr: 0x9C, symBinAddr: 0x10000396C, symSize: 0x14 }
+  - { offset: 0x4EB, size: 0x8, addend: 0x0, symName: _hobby_new, symObjAddr: 0x54, symBinAddr: 0x100003924, symSize: 0x48 }
+  - { offset: 0x537, size: 0x8, addend: 0x0, symName: _get_lines_n, symObjAddr: 0x0, symBinAddr: 0x1000038D0, symSize: 0x54 }
 ...

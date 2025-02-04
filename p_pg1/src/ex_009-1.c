@@ -39,7 +39,6 @@ int main(int argc, char* argv[])
 		input_buf[--char_counter] = '\0';
 	}
 	printf("Moin, %s.\n", input_buf);
-
 	return 0;
 }
 

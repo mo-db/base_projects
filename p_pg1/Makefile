@@ -1,12 +1,14 @@
 ### Blueprint Makefile ###
-SRC_FILES := pc_001
+SRC_FILES := ll_hoby
 
-SRC_DIR := src
+SRC_DIR := ll_ary
 OBJ_DIR := obj
 BIN_DIR := bin
 
-CC := gcc-14
-CFLAGS := -Wall -g -MMD -MP
+# CC := gcc-14
+CC := clang
+# for debugging
+CFLAGS := -fsanitize=address -fsanitize=undefined -Wall -Wextra -g -MMD -MP
 LDFLAGS :=
 
 EXE := $(BIN_DIR)/a.out
@@ -26,12 +28,12 @@ build: $(EXE)
 run: $(EXE)
 	./bin/a.out
 
-# Main executable target for the project
+# Link all the objectfiles into an exe
 $(EXE): $(OBJ) | $(BIN_DIR) # 
 	$(CC) $(LDFLAGS) $^ -o $@
 	dsymutil $@
 
-# All compilation steps except linking for every source file
+# Only source files that have been changed get rebuilt
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
