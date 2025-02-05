@@ -1,4 +1,4 @@
-#include "str-list.h"
+#include "int-list.h"
 #include <stdio.h>
 
 int main(int argc, char* argv[])

@@ -1,5 +1,5 @@
 ## Blueprint Makefile
-SRC_FILES := test str_list
+SRC_FILES := test int-list
 SRC_DIR := src
 OBJ_DIR := obj
 BIN_DIR := bin
@@ -9,11 +9,9 @@ EXE := $(BIN_DIR)/a.out
 SRC := $(wildcard $(SRC_DIR)/*.c)
 OBJ := $(addprefix $(OBJ_DIR)/, $(addsuffix .o, $(SRC_FILES)))
 
-INCLUDE := -Isrc
-
 ## for debugging
-CFLAGS := -fsanitize=address -fsanitize=undefined -Wall -Wextra -g -MMD -MP $(INCLUDE)
-LDFLAGS := -fsanitize=address -fsanitize=undefined $(INCLUDE)
+CFLAGS := -fsanitize=address -fsanitize=undefined -Wall -Wextra -g -MMD -MP
+LDFLAGS := -fsanitize=address -fsanitize=undefined
 
 ## for normal comp
 # CFLAGS := -Wall -Wextra -g -MMD -MP
