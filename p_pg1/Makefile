@@ -1,23 +1,28 @@
-### Blueprint Makefile ###
+## Blueprint Makefile
 SRC_FILES := ll_hoby
-
 SRC_DIR := ll_ary
 OBJ_DIR := obj
 BIN_DIR := bin
 
-# CC := gcc-14
-CC := clang
-# for debugging
-CFLAGS := -fsanitize=address -fsanitize=undefined -Wall -Wextra -g -MMD -MP
-LDFLAGS :=
-
+## create vars for target, src and object files
 EXE := $(BIN_DIR)/a.out
 SRC := $(wildcard $(SRC_DIR)/*.c)
 OBJ := $(addprefix $(OBJ_DIR)/, $(addsuffix .o, $(SRC_FILES)))
 
+## for debugging
+CFLAGS := -fsanitize=address -fsanitize=undefined -Wall -Wextra -g -MMD -MP
+LDFLAGS := -fsanitize=address -fsanitize=undefined
+
+## for normal comp
+# CFLAGS := -Wall -Wextra -g -MMD -MP
+# LDFLAGS :=
+
+## select compiler
+# CC := gcc-14
+CC := clang
 
 
-### Targets ###
+## Targets
 # Phony targets aren't treated as files
 .PHONY: all run clean
 
