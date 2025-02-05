@@ -1,5 +1,5 @@
 ## Blueprint Makefile
-SRC_FILES := test str_list
+SRC_FILES := test int-list
 SRC_DIR := src
 OBJ_DIR := obj
 BIN_DIR := bin
